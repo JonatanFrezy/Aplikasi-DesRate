@@ -25,7 +25,7 @@ const breadcrumbs: BreadcrumbItem[] = [
   },
 ];
 
-export default function CreateQuestionnaire({ questions }: CreateQuestionnaireProps) {
+export default function CreateQuestionnaire() {
     const { data, setData, post, processing, errors } = useForm({
         title: '',
         description: '',
