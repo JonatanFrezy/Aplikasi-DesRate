@@ -35,9 +35,32 @@ export interface User {
     id: number;
     name: string;
     email: string;
+    role: string;
     avatar?: string;
     email_verified_at: string | null;
     created_at: string;
     updated_at: string;
     [key: string]: unknown; // This allows for additional properties...
+}
+
+export interface Project {
+    id: number;
+    title: string;
+    pm_name: string;
+    team_members: string;
+    pic_name: string;
+    pic_email: string;
+    pic_phone: string;
+    user: {
+        name: string;
+    };
+    questionnaire?: {
+        title: string;
+    };
+}
+
+export interface Questionnaire {
+    id: number;
+    title: string;
+    description: string;
 }

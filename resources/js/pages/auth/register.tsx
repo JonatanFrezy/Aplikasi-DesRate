@@ -114,7 +114,7 @@ export default function Register() {
                             value={data.role}
                             onChange={(e) => setData('role', e.target.value)}
                             disabled={processing}
-                            className="w-full rounded-md border px-3 py-2 text-sm shadow-sm focus:outline-none"
+                            className="input w-full rounded-md border px-3 py-2 text-sm shadow-sm focus:outline-none"
                         >
                             <option value="">Select Role</option>
                             <option value="hod">Head of Department</option>
