@@ -10,10 +10,6 @@ import { LoaderCircle, PlusCircle, Trash } from 'lucide-react';
 import InputError from '@/components/input-error';
 import { Checkbox } from '@/components/ui/checkbox';
 
-interface CreateQuestionnaireProps {
-    questions: Question[];
-}
-
 const breadcrumbs: BreadcrumbItem[] = [
   {
     title: 'Kuesioner',
