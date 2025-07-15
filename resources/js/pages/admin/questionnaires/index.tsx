@@ -3,47 +3,48 @@ import AppLayout from '@/layouts/app-layout';
 import { type BreadcrumbItem } from '@/types';
 import { Delete, Edit } from 'lucide-react';
 
-type Project = {
+type Question = {
+  id: number;
+  text: string;
+  type: string;
+  order_number?: number | null;
+  is_required: boolean;
+  questionnaire_id: number;
+};
+
+type Questionnaire = {
     id: number;
     title: string;
-    pm_name: string;
-    team_members: string;
-    pic_name: string;
-    pic_email: string;
-    pic_phone: string;
-    user: {
-        name: string;
-    };
-    questionnaire?: {
-        title: string;
-    };
+    description: string;
+    questions: Question[];
+    questions_count: number;
 };
 
 type PageProps = {
-    projects: Project[];
+    questionnaires: Questionnaire[];
 };
 
 const breadcrumbs: BreadcrumbItem[] = [
     {
-        title: 'Pekerjaan',
-        href: '/projects',
+        title: 'Kuesioner',
+        href: '/questionnaires',
     },
 ];
 
-export default function Projects() {
-    const { projects } = usePage<PageProps>().props;
+export default function Questionnaires() {
+    const { questionnaires } = usePage<PageProps>().props;
 
     return (
         <AppLayout breadcrumbs={breadcrumbs}>
-        <Head title="Projects" />
+        <Head title="Kuesioner" />
 
         <div className="flex justify-between items-center my-3 mx-3">
-            <h1 className="text-2xl font-bold">Daftar Pekerjaan</h1>
+            <h1 className="text-2xl font-bold">Daftar Kuesioner</h1>
             <Link
-            href="/projects/create"
+            href="/questionnaires/create"
             className="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-md text-sm"
             >
-            Tambah Pekerjaan
+            Tambah Kuesioner
             </Link>
         </div>
 
@@ -53,41 +54,29 @@ export default function Projects() {
                 <tr>
                 <th className="border px-4 py-2 text-left">#</th>
                 <th className="border px-4 py-2 text-left">Judul</th>
-                <th className="border px-4 py-2 text-left">PM</th>
-                <th className="border px-4 py-2 text-left">Anggota Tim</th>
-                <th className="border px-4 py-2 text-left">PIC</th>
-                <th className="border px-4 py-2 text-left">Email PIC</th>
-                <th className="border px-4 py-2 text-left">No PIC</th>
-                <th className="border px-4 py-2 text-left">Kuesioner</th>
-                <th className="border px-4 py-2 text-left">Admin</th>
+                <th className="border px-4 py-2 text-left">Deskripsi</th>
+                <th className="border px-4 py-2 text-left">Jumlah Pertanyaan</th>
                 <th className="border px-4 py-2 text-left">Aksi</th>
                 </tr>
             </thead>
             <tbody>
-                {projects.length > 0 ? (
-                projects.map((project, index) => (
-                    <tr key={project.id}>
+                {questionnaires.length > 0 ? (
+                questionnaires.map((questionnaire, index) => (
+                    <tr key={questionnaire.id}>
                     <td className="border px-4 py-2">{index + 1}</td>
-                    <td className="border px-4 py-2">{project.title}</td>
-                    <td className="border px-4 py-2">{project.pm_name}</td>
-                    <td className="border px-4 py-2">{project.team_members}</td>
-                    <td className="border px-4 py-2">{project.pic_name}</td>
-                    <td className="border px-4 py-2">{project.pic_email}</td>
-                    <td className="border px-4 py-2">{project.pic_phone}</td>
-                    <td className="border px-4 py-2">
-                        {project.questionnaire?.title ?? '-'}
-                    </td>
-                    <td className="border px-4 py-2">{project.user?.name}</td>
+                    <td className="border px-4 py-2">{questionnaire.title}</td>
+                    <td className="border px-4 py-2">{questionnaire.description}</td>
+                    <td className="border px-4 py-2">{questionnaire.questions_count}</td>
                     <td className="border px-4 py-2">
                         <div className="flex items-center space-x-2">
                             <Link
-                            href={`/projects/${project.id}/edit`}
+                            href={`/questionnaires/${questionnaire.id}/edit`}
                             className="text-yellow-600 hover:underline text-sm"
                             >
                             <Edit className="w-4 h-4" />
                             </Link>
                             <Link
-                            href={`/projects/${project.id}`}
+                            href={`/questionnaires/${questionnaire.id}`}
                             method="delete"
                             as="button"
                             className="text-red-600 hover:underline text-sm"

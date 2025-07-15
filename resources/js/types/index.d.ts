@@ -64,3 +64,15 @@ export interface Questionnaire {
     title: string;
     description: string;
 }
+
+export interface Question {
+    id: number;
+    text: string;
+    type: string;
+    order_number: integer;
+    is_required: boolean;
+    questionnaire?: {
+        title: string;
+        description: string;
+    };
+}

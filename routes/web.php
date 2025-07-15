@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\AdminProjectController;
+use App\Http\Controllers\AdminQuestionnaireController;
 use Illuminate\Support\Facades\Route;
 use Inertia\Inertia;
 
@@ -16,6 +17,10 @@ Route::middleware(['auth', 'verified'])->group(function () {
 
 Route::middleware(['auth', 'verified'])->group(function () {
     Route::resource('projects', AdminProjectController::class);
+});
+
+Route::middleware(['auth', 'verified'])->group(function () {
+    Route::resource('questionnaires', AdminQuestionnaireController::class);
 });
 
 require __DIR__.'/settings.php';

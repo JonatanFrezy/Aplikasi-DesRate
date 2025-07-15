@@ -15,8 +15,12 @@ interface CreateProjectProps {
 
 const breadcrumbs: BreadcrumbItem[] = [
   {
-    title: 'Projects',
+    title: 'Pekerjaan',
     href: '/projects',
+  },
+  {
+    title: 'Tambah',
+    href: '/projects/create',
   },
 ];
 
@@ -38,13 +42,13 @@ export default function CreateProject({ questionnaires }: CreateProjectProps) {
 
     return (
         <AppLayout breadcrumbs={breadcrumbs}>
-            <Head title="Add Project" />
+            <Head title="Tambah Pekerjaan" />
 
-            <h1 className="text-2xl font-bold my-3 mx-3">Add Project</h1>
+            <h1 className="text-2xl font-bold my-3 mx-3">Tambah Pekerjaan</h1>
 
             <form onSubmit={submit} className="space-y-4 max-w-xl mx-3">
                 <div className="grid gap-2">
-                    <Label className="block font-semibold">Title Project</Label>
+                    <Label className="block font-semibold">Judul Pekerjaan</Label>
                     <Input
                         type="text"
                         required
@@ -56,7 +60,7 @@ export default function CreateProject({ questionnaires }: CreateProjectProps) {
                 </div>
 
                 <div className="grid gap-2">
-                    <Label className="block font-semibold">PM Name</Label>
+                    <Label className="block font-semibold">Nama PM</Label>
                     <Input
                         type="text"
                         required
@@ -68,7 +72,7 @@ export default function CreateProject({ questionnaires }: CreateProjectProps) {
                 </div>
 
                 <div className="grid gap-2">
-                    <Label className="block font-semibold">Team Members</Label>
+                    <Label className="block font-semibold">Anggota Tim</Label>
                     <textarea
                         required
                         value={data.team_members}
@@ -79,7 +83,7 @@ export default function CreateProject({ questionnaires }: CreateProjectProps) {
                 </div>
 
                 <div className="grid gap-2">
-                    <Label className="block font-semibold">PIC Name</Label>
+                    <Label className="block font-semibold">Nama PIC</Label>
                     <Input
                         type="text"
                         required
@@ -91,7 +95,7 @@ export default function CreateProject({ questionnaires }: CreateProjectProps) {
                 </div>
 
                 <div className="grid gap-2">
-                    <Label className="block font-semibold">PIC Email</Label>
+                    <Label className="block font-semibold">Email PIC</Label>
                     <Input
                         type="email"
                         required
@@ -103,7 +107,7 @@ export default function CreateProject({ questionnaires }: CreateProjectProps) {
                 </div>
 
                 <div className="grid gap-2">
-                    <Label className="block font-semibold">PIC Phone</Label>
+                    <Label className="block font-semibold">No PIC</Label>
                     <Input
                         type="text"
                         required
@@ -115,13 +119,13 @@ export default function CreateProject({ questionnaires }: CreateProjectProps) {
                 </div>
 
                 <div className="grid gap-2">
-                    <Label className="block font-semibold">Questionnaire (Optional)</Label>
+                    <Label className="block font-semibold">Kuesioner (Opsional)</Label>
                     <select
                         value={data.questionnaire_id}
                         onChange={(e) => setData('questionnaire_id', e.target.value)}
                         className="input w-full rounded-md border px-3 py-2 text-sm shadow-sm focus:outline-none"
                     >
-                        <option value="">-- Select Questionnaire --</option>
+                        <option value="">-- Pilih Kuesioner --</option>
                         {questionnaires.map((q) => (
                             <option key={q.id} value={q.id}>
                                 {q.title}
@@ -133,7 +137,7 @@ export default function CreateProject({ questionnaires }: CreateProjectProps) {
 
                 <Button type="submit" className="mt-2 w-full" tabIndex={5} disabled={processing}>
                         {processing && <LoaderCircle className="h-4 w-4 animate-spin" />}
-                    Save
+                    Simpan
                 </Button>
             </form>
         </AppLayout>

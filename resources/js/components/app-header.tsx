@@ -11,7 +11,7 @@ import { useInitials } from '@/hooks/use-initials';
 import { cn } from '@/lib/utils';
 import { type BreadcrumbItem, type NavItem, type SharedData } from '@/types';
 import { Link, usePage } from '@inertiajs/react';
-import { BookOpen, Computer, Folder, LayoutGrid, Menu, Search } from 'lucide-react';
+import { BookOpen, Computer, FileQuestion, Folder, LayoutGrid, Menu, Search } from 'lucide-react';
 import AppLogo from './app-logo';
 import AppLogoIcon from './app-logo-icon';
 
@@ -22,9 +22,14 @@ const mainNavItems: NavItem[] = [
         icon: LayoutGrid,
     },
     {
-        title: 'Projects',
+        title: 'Pekerjaan',
         href: '/projects',
         icon: Computer,
+    },
+    {
+        title: 'Kuesioner',
+        href: '/questionnaires',
+        icon: FileQuestion,
     },
 ];
 

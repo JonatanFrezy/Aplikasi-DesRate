@@ -16,7 +16,7 @@ interface EditProjectProps {
 
 export default function EditProject({ project, questionnaires }: EditProjectProps) {
     const breadcrumbs: BreadcrumbItem[] = [
-        { title: 'Projects', href: '/projects' },
+        { title: 'Pekerjaan', href: '/projects' },
         { title: `Edit: ${project.title}`, href: `/projects/${project.id}/edit` },
     ];
 
@@ -37,13 +37,13 @@ export default function EditProject({ project, questionnaires }: EditProjectProp
 
     return (
         <AppLayout breadcrumbs={breadcrumbs}>
-            <Head title={`Edit Project: ${project.title}`} />
+            <Head title={`Edit Pekerjaan: ${project.title}`} />
 
-            <h1 className="text-2xl font-bold my-3 mx-3">Edit Project</h1>
+            <h1 className="text-2xl font-bold my-3 mx-3">Edit Pekerjaan</h1>
 
             <form onSubmit={submit} className="space-y-4 max-w-xl mx-3">
                 <div className="grid gap-2">
-                    <Label className="font-semibold">Title Project</Label>
+                    <Label className="font-semibold">Judul Pekerjaan</Label>
                     <Input
                         type="text"
                         value={data.title}
@@ -53,7 +53,7 @@ export default function EditProject({ project, questionnaires }: EditProjectProp
                 </div>
 
                 <div className="grid gap-2">
-                    <Label className="font-semibold">PM Name</Label>
+                    <Label className="font-semibold">Nama PM</Label>
                     <Input
                         type="text"
                         value={data.pm_name}
@@ -63,7 +63,7 @@ export default function EditProject({ project, questionnaires }: EditProjectProp
                 </div>
 
                 <div className="grid gap-2">
-                    <Label className="font-semibold">Team Members</Label>
+                    <Label className="font-semibold">Anggota Tim</Label>
                     <textarea
                         value={data.team_members}
                         onChange={(e) => setData('team_members', e.target.value)}
@@ -73,7 +73,7 @@ export default function EditProject({ project, questionnaires }: EditProjectProp
                 </div>
 
                 <div className="grid gap-2">
-                    <Label className="font-semibold">PIC Name</Label>
+                    <Label className="font-semibold">Nama PIC</Label>
                     <Input
                         type="text"
                         value={data.pic_name}
@@ -83,7 +83,7 @@ export default function EditProject({ project, questionnaires }: EditProjectProp
                 </div>
 
                 <div className="grid gap-2">
-                    <Label className="font-semibold">PIC Email</Label>
+                    <Label className="font-semibold">Email PIC</Label>
                     <Input
                         type="email"
                         value={data.pic_email}
@@ -93,7 +93,7 @@ export default function EditProject({ project, questionnaires }: EditProjectProp
                 </div>
 
                 <div className="grid gap-2">
-                    <Label className="font-semibold">PIC Phone</Label>
+                    <Label className="font-semibold">No PIC</Label>
                     <Input
                         type="text"
                         value={data.pic_phone}
@@ -103,13 +103,13 @@ export default function EditProject({ project, questionnaires }: EditProjectProp
                 </div>
 
                 <div className="grid gap-2">
-                    <Label className="font-semibold">Questionnaire (Optional)</Label>
+                    <Label className="font-semibold">Kuesioner (Opsional)</Label>
                     <select
                         value={data.questionnaire_id}
                         onChange={(e) => setData('questionnaire_id', e.target.value)}
                         className="input w-full rounded-md border px-3 py-2 text-sm shadow-sm focus:outline-none"
                     >
-                        <option value="">-- Select Questionnaire --</option>
+                        <option value="">-- Pilih Kuesioner --</option>
                         {questionnaires.map((q) => (
                             <option key={q.id} value={q.id}>
                                 {q.title}
@@ -121,7 +121,7 @@ export default function EditProject({ project, questionnaires }: EditProjectProp
 
                 <Button type="submit" className="mt-2 w-full" disabled={processing}>
                     {processing && <LoaderCircle className="h-4 w-4 animate-spin" />}
-                    Update
+                    Perbarui
                 </Button>
             </form>
         </AppLayout>

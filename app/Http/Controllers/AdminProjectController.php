@@ -53,7 +53,7 @@ class AdminProjectController extends Controller
             'user_id' => Auth::id(),
         ]);
 
-        return redirect()->route('projects.index')->with('success', 'Project berhasil ditambahkan.');
+        return redirect()->route('projects.index')->with('success', 'Pekerjaan berhasil ditambahkan.');
     }
 
     public function edit($id): Response
@@ -92,7 +92,7 @@ class AdminProjectController extends Controller
             'user_id' => Auth::id()
         ]);
 
-        return redirect()->route('projects.index')->with('success', 'Project berhasil diperbarui.');
+        return redirect()->route('projects.index')->with('success', 'Pekerjaan berhasil diperbarui.');
     }
 
     public function destroy($id): RedirectResponse
@@ -100,6 +100,6 @@ class AdminProjectController extends Controller
         $project = Project::findOrFail($id);
         $project->delete();
         
-        return redirect()->route('projects.index')->with('success', 'Project berhasil dihapus.');
+        return redirect()->route('projects.index')->with('success', 'Pekerjaan berhasil dihapus.');
     }
 }
