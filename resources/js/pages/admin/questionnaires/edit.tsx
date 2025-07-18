@@ -16,7 +16,7 @@ interface EditQuestionnaireProps {
     answer_options: AnswerOption[];
 }
 
-export default function EditQuestionnaire({ questionnaire, questions }: EditQuestionnaireProps) {
+export default function EditQuestionnaire({ questionnaire }: EditQuestionnaireProps) {
     const breadcrumbs: BreadcrumbItem[] = [
         { title: 'Kuesioner', href: '/questionnaires' },
         { title: `Edit: ${questionnaire.title}`, href: `/questionnaires/${questionnaire.id}/edit` },
@@ -25,12 +25,12 @@ export default function EditQuestionnaire({ questionnaire, questions }: EditQues
     const { data, setData, put, processing, errors } = useForm({
         title: questionnaire.title || '',
         description: questionnaire.description || '',
-        questions: questionnaire.questions?.map((q: any) => ({
+        questions: questionnaire.questions?.map((q: Question) => ({
             text: q.text || '',
             type: q.type || 'text',
             order_number: q.order_number || 1,
             is_required: q.is_required ?? false,
-            answer_options: q.answer_options?.map((opt: any, i: number) => ({
+            answer_options: q.answer_options?.map((opt: AnswerOption, i: number) => ({
                 value: opt.value ?? i + 1,
                 label: opt.label ?? '',
             })) ?? [{ value: 1, label: '' }],
@@ -85,7 +85,7 @@ export default function EditQuestionnaire({ questionnaire, questions }: EditQues
 
         // Reset options if type changed to 'text'
         if (key === 'type' && (value === 'text')) {
-        updated[index].answer_options = [''];
+            updated[index].answer_options = [{ value: 1, label: '' }];
         }
 
         setData('questions', updated);
