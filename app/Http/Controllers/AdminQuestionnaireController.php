@@ -34,8 +34,9 @@ class AdminQuestionnaireController extends Controller
             'questions.*.type' => 'required|in:text,radio',
             'questions.*.order_number' => 'nullable|integer',
             'questions.*.is_required' => 'boolean',
-            'questions.*.options' => 'nullable|array',
-            'questions.*.options.*' => 'nullable|string',
+            'questions.*.answer_options' => 'nullable|array',
+            'questions.*.answer_options.*.value' => 'required|integer',
+            'questions.*.answer_options.*.label' => 'required|string|max:255',
         ]);
 
         // Simpan kuesioner
@@ -54,9 +55,12 @@ class AdminQuestionnaireController extends Controller
             ]);
 
             // Simpan opsi jawaban jika tipe-nya radio
-            if ($questionData['type'] === 'radio' && !empty($questionData['options'])) {
-                foreach ($questionData['options'] as $option) {
-                    $question->answerOptions()->create(['text' => $option]);
+            if ($questionData['type'] === 'radio' && !empty($questionData['answer_options'])) {
+                foreach ($questionData['answer_options'] as $option) {
+                    $question->answerOptions()->create([
+                        'value' => $option['value'],
+                        'label' => $option['label'],
+                    ]);
                 }
             }
         }
@@ -68,7 +72,7 @@ class AdminQuestionnaireController extends Controller
 
     public function edit($id): Response
     {
-        $questionnaire = Questionnaire::with(['questions'])->findOrFail($id);
+        $questionnaire = Questionnaire::with(['questions.answerOptions'])->findOrFail($id);
 
         return Inertia::render('admin/questionnaires/edit', [
             'questionnaire' => $questionnaire
@@ -87,8 +91,9 @@ class AdminQuestionnaireController extends Controller
             'questions.*.type' => 'required|in:text,radio',
             'questions.*.order_number' => 'nullable|integer',
             'questions.*.is_required' => 'boolean',
-            'questions.*.options' => 'nullable|array',
-            'questions.*.options.*' => 'nullable|string',
+            'questions.*.answer_options' => 'nullable|array',
+            'questions.*.answer_options.*.value' => 'required|integer',
+            'questions.*.answer_options.*.label' => 'required|string|max:255',
         ]);
 
         // Update data kuesioner
@@ -98,10 +103,11 @@ class AdminQuestionnaireController extends Controller
         ]);
 
         // Hapus semua pertanyaan dan opsi lama
-        foreach ($questionnaire->questions as $oldQuestion) {
+        $questionnaire->questions->each(function ($oldQuestion) {
             $oldQuestion->answerOptions()->delete();
-        }
+        });
         $questionnaire->questions()->delete();
+
 
         // Simpan ulang pertanyaan dan opsi baru
         foreach ($validated['questions'] as $questionData) {
@@ -112,9 +118,12 @@ class AdminQuestionnaireController extends Controller
                 'is_required' => $questionData['is_required'] ?? false,
             ]);
 
-            if ($questionData['type'] === 'radio' && !empty($questionData['options'])) {
-                foreach ($questionData['options'] as $option) {
-                    $question->answerOptions()->create(['text' => $option]);
+            if ($questionData['type'] === 'radio' && !empty($questionData['answer_options'])) {
+                foreach ($questionData['answer_options'] as $option) {
+                    $question->answerOptions()->create([
+                        'value' => $option['value'],
+                        'label' => $option['label'],
+                    ]);
                 }
             }
         }

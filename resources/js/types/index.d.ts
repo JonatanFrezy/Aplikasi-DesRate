@@ -63,6 +63,7 @@ export interface Questionnaire {
     id: number;
     title: string;
     description: string;
+    questions: Question[];
 }
 
 export interface Question {
@@ -74,5 +75,18 @@ export interface Question {
     questionnaire?: {
         title: string;
         description: string;
+    };
+    answer_options: AnswerOption[];
+}
+
+export interface AnswerOption {
+    id: number;
+    value: integer;
+    label: string;
+    question?: {
+        text: string;
+        type: string;
+        order_number: integer;
+        is_required: boolean;
     };
 }

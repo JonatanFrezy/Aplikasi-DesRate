@@ -31,22 +31,30 @@ export default function CreateQuestionnaire() {
             type: 'text',
             order_number: 1,
             is_required: false,
-            options: [''], 
+            answer_options: [{ value: 1, label: '' }], 
         },
         ],
     });
 
-    const addQuestion = () => {
-    setData('questions', [
-        ...data.questions,
-        {
+    const addQuestion = (afterIndex: number) => {
+        const updated = [...data.questions];
+
+        // Insert question after current index
+        updated.splice(afterIndex + 1, 0, {
             text: '',
             type: 'text',
-            order_number: data.questions.length + 1,
+            order_number: 0, // akan diisi ulang nanti
             is_required: false,
-            options: [''],
-        },
-        ]);
+            answer_options: [{ value: 1, label: '' }],
+        });
+
+        // Reorder semua order_number
+        const reordered = updated.map((q, idx) => ({
+            ...q,
+            order_number: idx + 1,
+        }));
+
+        setData('questions', reordered);
     };
 
     const removeQuestion = (index: number) => {
@@ -67,28 +75,28 @@ export default function CreateQuestionnaire() {
     };
 
         // Reset options if type changed to 'text'
-        if (key === 'type' && (value === 'text')) {
-        updated[index].options = [''];
+        if (key === 'type' && value === 'text') {
+            updated[index].answer_options = [{ value: 1, label: '' }];
         }
 
         setData('questions', updated);
     };
 
-        const addOption = (qIndex: number) => {
+    const addOption = (qIndex: number) => {
         const updated = [...data.questions];
-        updated[qIndex].options.push('');
+        updated[qIndex].answer_options.push({ value: updated[qIndex].answer_options.length + 1, label: '' });
         setData('questions', updated);
     };
 
     const updateOption = (qIndex: number, oIndex: number, value: string) => {
         const updated = [...data.questions];
-        updated[qIndex].options[oIndex] = value;
+        updated[qIndex].answer_options[oIndex].label = value;
         setData('questions', updated);
     };
 
     const removeOption = (qIndex: number, oIndex: number) => {
         const updated = [...data.questions];
-        updated[qIndex].options.splice(oIndex, 1);
+        updated[qIndex].answer_options.splice(oIndex, 1);
         setData('questions', updated);
     };
 
@@ -181,20 +189,32 @@ export default function CreateQuestionnaire() {
                     {(q.type === 'radio') && (
                     <div className="space-y-2">
                         <Label>Opsi Jawaban</Label>
-                        {q.options.map((opt, oIndex) => (
+                        {q.answer_options.map((opt, oIndex) => (
                         <div key={oIndex} className="flex gap-2">
+                            <div className="grid grid-cols-2 gap-2 w-full">
                             <Input
-                            value={opt}
-                            onChange={(e) => updateOption(index, oIndex, e.target.value)}
-                            className="w-full"
+                                type="number"
+                                value={opt.value}
+                                onChange={(e) => {
+                                const updated = [...data.questions];
+                                updated[index].answer_options[oIndex].value = Number(e.target.value);
+                                setData('questions', updated);
+                                }}
+                                placeholder="Value"
+                            />
+                            <Input
+                                value={opt.label}
+                                onChange={(e) => updateOption(index, oIndex, e.target.value)}
+                                placeholder="Label"
                             />
                             <button
-                            type="button"
-                            onClick={() => removeOption(index, oIndex)}
-                            className="text-red-600 hover:text-red-800"
+                                type="button"
+                                onClick={() => removeOption(index, oIndex)}
+                                className="text-red-600 hover:text-red-800 col-span-2"
                             >
-                            <Trash size={18} />
+                                <Trash size={18} />
                             </button>
+                            </div>
                         </div>
                         ))}
                         <Button
@@ -208,19 +228,17 @@ export default function CreateQuestionnaire() {
                         </Button>
                     </div>
                     )}
-                </div>
-                ))}
-                <div className="mt-4">
                     <Button
                         type="button"
                         variant="outline"
-                        onClick={addQuestion}
+                        onClick={() => addQuestion(index)}
                         className="w-full"
                     >
                         <PlusCircle className="w-4 h-4 mr-2" />
                         Tambah Pertanyaan
                     </Button>
                 </div>
+                ))}
                 <Button type="submit" className="mt-2 w-full" tabIndex={5} disabled={processing}>
                         {processing && <LoaderCircle className="h-4 w-4 animate-spin" />}
                     Simpan
