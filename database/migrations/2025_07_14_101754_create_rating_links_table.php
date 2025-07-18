@@ -14,11 +14,16 @@ return new class extends Migration
         Schema::create('rating_links', function (Blueprint $table) {
             $table->id();
             $table->string('token')->unique();
+            $table->string('send_to_name');
             $table->string('send_to_email')->nullable();
             $table->string('send_to_phone')->nullable();
             $table->boolean('is_used')->default(false);
             $table->foreignId('project_id')
                 ->constrained('projects')
+                ->noActionOnUpdate()
+                ->cascadeOnDelete();
+            $table->foreignId('questionnaire_id')
+                ->constrained('questionnaires')
                 ->noActionOnUpdate()
                 ->cascadeOnDelete();
             $table->timestamps();

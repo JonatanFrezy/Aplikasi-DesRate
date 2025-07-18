@@ -12,7 +12,6 @@ type Project = {
   pic_email: string;
   pic_phone: string;
   user: { name: string };
-  questionnaire?: { title: string };
 };
 
 type PageProps = {
@@ -26,8 +25,6 @@ const breadcrumbs: BreadcrumbItem[] = [
 export default function Projects() {
   const { projects } = usePage<PageProps>().props;
   const currentUrl = usePage().url;
-
-  const isActive = (path: string) => currentUrl.startsWith(path);
 
   return (
     <AppLayout breadcrumbs={breadcrumbs}>

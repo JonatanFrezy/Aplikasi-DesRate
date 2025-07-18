@@ -7,14 +7,13 @@ import { Input } from '@/components/ui/input';
 import { Button } from '@/components/ui/button';
 import { LoaderCircle, Trash2, Pencil } from 'lucide-react';
 import InputError from '@/components/input-error';
-import type { Project, Questionnaire } from '@/types';
+import type { Project } from '@/types';
 
 interface EditProjectProps {
     project: Project;
-    questionnaires: Questionnaire[];
 }
 
-export default function EditProject({ project, questionnaires }: EditProjectProps) {
+export default function EditProject({ project }: EditProjectProps) {
     const breadcrumbs: BreadcrumbItem[] = [
         { title: 'Pekerjaan', href: '/projects' },
         { title: `Edit: ${project.title}`, href: `/projects/${project.id}/edit` },
@@ -34,7 +33,6 @@ export default function EditProject({ project, questionnaires }: EditProjectProp
         pic_name: project.pic_name || '',
         pic_email: project.pic_email || '',
         pic_phone: project.pic_phone || '',
-        questionnaire_id: project.questionnaire?.toString() || '',
     });
 
     const submit: FormEventHandler = (e) => {

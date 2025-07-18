@@ -9,11 +9,6 @@ class Project extends Model
 {
     use HasFactory;
     protected $guarded = ['id'];
-    
-    public function questionnaire()
-    {
-        return $this->belongsTo(Questionnaire::class);
-    }
 
     public function user()
     {

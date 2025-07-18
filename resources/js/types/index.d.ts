@@ -54,16 +54,14 @@ export interface Project {
     user: {
         name: string;
     };
-    questionnaire?: {
-        title: string;
-    };
+    rating_links: RatingLink[];
 }
 
 export interface Questionnaire {
     id: number;
     title: string;
     description: string;
-    questions: Question[];
+    rating_links: RatingLink[];
 }
 
 export interface Question {

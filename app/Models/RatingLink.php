@@ -15,6 +15,11 @@ class RatingLink extends Model
         return $this->belongsTo(Project::class);
     }
 
+    public function questionnaire()
+    {
+        return $this->belongsTo(Questionnaire::class);
+    }
+
     public function response()
     {
         return $this->hasOne(Response::class);

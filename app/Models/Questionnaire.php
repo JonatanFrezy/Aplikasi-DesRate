@@ -15,8 +15,8 @@ class Questionnaire extends Model
         return $this->hasMany(Question::class);
     }
 
-    public function projects()
+    public function ratingLinks()
     {
-        return $this->hasMany(Project::class);
+        return $this->hasMany(RatingLink::class);
     }
 }

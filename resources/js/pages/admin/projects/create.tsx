@@ -2,23 +2,18 @@ import { Head, useForm } from '@inertiajs/react';
 import AppLayout from '@/layouts/app-layout';
 import { type BreadcrumbItem } from '@/types';
 import type { FormEventHandler } from 'react';
-import type { Questionnaire } from '@/types';
 import { Label } from '@/components/ui/label';
 import { Input } from '@/components/ui/input';
 import { Button } from '@/components/ui/button';
 import { LoaderCircle } from 'lucide-react';
 import InputError from '@/components/input-error';
 
-interface CreateProjectProps {
-    questionnaires: Questionnaire[];
-}
-
 const breadcrumbs: BreadcrumbItem[] = [
   { title: 'Pekerjaan', href: '/projects' },
   { title: 'Tambah', href: '/projects/create' },
 ];
 
-export default function CreateProject({ questionnaires }: CreateProjectProps) {
+export default function CreateProject() {
     const { data, setData, post, processing, errors } = useForm({
         title: '',
         pm_name: '',
@@ -26,7 +21,6 @@ export default function CreateProject({ questionnaires }: CreateProjectProps) {
         pic_name: '',
         pic_email: '',
         pic_phone: '',
-        questionnaire_id: '',
     });
 
     const submit: FormEventHandler = (e) => {

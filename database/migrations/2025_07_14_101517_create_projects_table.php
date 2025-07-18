@@ -19,11 +19,6 @@ return new class extends Migration
             $table->string('pic_name');
             $table->string('pic_email');
             $table->string('pic_phone');
-            $table->foreignId('questionnaire_id')
-                ->nullable()
-                ->constrained('questionnaires')
-                ->noActionOnUpdate()
-                ->nullOnDelete();
             $table->foreignId('user_id')
                 ->nullable()
                 ->constrained('users')
