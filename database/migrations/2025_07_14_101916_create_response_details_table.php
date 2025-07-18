@@ -11,23 +11,17 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('response_details', function (Blueprint $table) {
-            $table->id();
-            $table->text('answer_text')->nullable();
-            $table->foreignId('selected_option')
-                ->nullable()
-                ->constrained('answer_options')
-                ->noActionOnUpdate()
-                ->cascadeOnDelete();
-            $table->foreignId('response_id')
-                ->constrained('responses')
-                ->noActionOnUpdate()
-                ->cascadeOnDelete();
-            $table->foreignId('question_id')
-                ->constrained('questions')
-                ->noActionOnUpdate()
-                ->cascadeOnDelete();
-            $table->timestamp('submitted_at')->useCurrent();
+        Schema::create('rating_links', function (Blueprint $table) {
+            $table->id('rating_link_id');
+            $table->foreignId('project_id')
+                ->constrained('projects')
+                ->cascadeOnDelete()
+                ->noActionOnUpdate();
+            $table->string('token')->unique();
+            $table->string('send_to_email')->nullable();
+            $table->string('send_to_phone')->nullable();
+            $table->boolean('is_used')->default(false);
+            $table->timestamps();
         });
     }
 
@@ -36,6 +30,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('response_details');
+        Schema::dropIfExists('rating_links');
     }
 };
