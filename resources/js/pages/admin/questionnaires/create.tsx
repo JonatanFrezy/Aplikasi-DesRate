@@ -1,4 +1,4 @@
-import { Head, useForm } from '@inertiajs/react';
+import { Head, router, useForm } from '@inertiajs/react';
 import AppLayout from '@/layouts/app-layout';
 import { type BreadcrumbItem } from '@/types';
 import type { FormEventHandler } from 'react';
@@ -102,7 +102,18 @@ export default function CreateQuestionnaire() {
 
     const submit: FormEventHandler = (e) => {
         e.preventDefault();
-        post('/questionnaires'); 
+
+        const cleanedQuestions = data.questions.map((q) => ({
+            ...q,
+            answer_options: q.type === 'radio' ? q.answer_options : [],
+        }));
+
+        const formData = {
+            ...data,
+            questions: cleanedQuestions,
+        };
+
+        router.post('/questionnaires', formData);
     };
 
     return (

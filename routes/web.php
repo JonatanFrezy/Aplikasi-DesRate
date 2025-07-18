@@ -2,6 +2,7 @@
 
 use App\Http\Controllers\AdminProjectController;
 use App\Http\Controllers\AdminQuestionnaireController;
+use App\Http\Controllers\Auth\AuthenticatedSessionController;
 use Illuminate\Support\Facades\Route;
 use Inertia\Inertia;
 
