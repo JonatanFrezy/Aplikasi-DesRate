@@ -11,7 +11,6 @@ type Project = {
   pic_name: string;
   pic_email: string;
   pic_phone: string;
-  user: { name: string };
 };
 
 type PageProps = {

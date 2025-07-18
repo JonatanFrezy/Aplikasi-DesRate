@@ -3,48 +3,47 @@ import AppLayout from '@/layouts/app-layout';
 import { type BreadcrumbItem } from '@/types';
 import { Delete, Edit } from 'lucide-react';
 
-type Question = {
+type RatingLink = {
     id: number;
-    text: string;
-    type: string;
-    order_number?: number | null;
-    is_required: boolean;
-    questionnaire_id: number;
-};
-
-type Questionnaire = {
-    id: number;
-    title: string;
-    description: string;
-    questions: Question[];
-    questions_count: number;
+    token: string;
+    link?: string; 
+    send_to_name: string;
+    send_to_email: string;
+    send_to_phone: string;
+    is_used: boolean;
+    project?: {
+        title: string;
+    };
+    questionnaire?: {
+        title: string;
+    };
 };
 
 type PageProps = {
-    questionnaires: Questionnaire[];
+    rating_links: RatingLink[];
 };
 
 const breadcrumbs: BreadcrumbItem[] = [
     {
-        title: 'Kuesioner',
-        href: '/questionnaires',
+        title: 'Link Rating',
+        href: '/rating-links',
     },
 ];
 
-export default function Questionnaires() {
-    const { questionnaires } = usePage<PageProps>().props;
+export default function RatingLinks() {
+    const { rating_links } = usePage<PageProps>().props;
 
     return (
         <AppLayout breadcrumbs={breadcrumbs}>
-        <Head title="Kuesioner" />
+        <Head title="Link Rating" />
 
         <div className="flex justify-between items-center my-3 mx-3">
-            <h1 className="text-2xl font-bold">Daftar Kuesioner</h1>
+            <h1 className="text-2xl font-bold">Daftar Link Rating</h1>
             <Link
-            href="/questionnaires/create"
+            href="/rating-links/create"
             className="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-md text-sm"
             >
-            Tambah Kuesioner
+            Tambah Link Rating
             </Link>
         </div>
 
@@ -53,30 +52,42 @@ export default function Questionnaires() {
             <thead className="bg-gray-100">
                 <tr>
                 <th className="border px-4 py-2 text-left">#</th>
-                <th className="border px-4 py-2 text-left">Judul</th>
-                <th className="border px-4 py-2 text-left">Deskripsi</th>
-                <th className="border px-4 py-2 text-left">Jumlah Pertanyaan</th>
+                <th className="border px-4 py-2 text-left">Link</th>
+                <th className="border px-4 py-2 text-left">Pekerjaan</th>
+                <th className="border px-4 py-2 text-left">Kuesioner</th>
+                <th className="border px-4 py-2 text-left">Nama Penerima</th>
+                <th className="border px-4 py-2 text-left">Email</th>
+                <th className="border px-4 py-2 text-left">Kontak</th>
+                <th className="border px-4 py-2 text-left">Status</th>
                 <th className="border px-4 py-2 text-left">Aksi</th>
                 </tr>
             </thead>
             <tbody>
-                {questionnaires.length > 0 ? (
-                questionnaires.map((questionnaire, index) => (
-                    <tr key={questionnaire.id}>
+                {rating_links.length > 0 ? (
+                rating_links.map((rating_link, index) => (
+                    <tr key={rating_link.id}>
                     <td className="border px-4 py-2">{index + 1}</td>
-                    <td className="border px-4 py-2">{questionnaire.title}</td>
-                    <td className="border px-4 py-2">{questionnaire.description}</td>
-                    <td className="border px-4 py-2">{questionnaire.questions_count}</td>
+                    <td className="border px-4 py-2">{rating_link.link}</td>
+                    <td className="border px-4 py-2">
+                        {rating_link.project?.title ?? '-'}
+                    </td>
+                    <td className="border px-4 py-2">
+                        {rating_link.questionnaire?.title ?? '-'}
+                    </td>
+                    <td className="border px-4 py-2">{rating_link.send_to_name}</td>
+                    <td className="border px-4 py-2">{rating_link.send_to_email}</td>
+                    <td className="border px-4 py-2">{rating_link.send_to_phone}</td>
+                    <td className="border px-4 py-2">{rating_link.is_used}</td>
                     <td className="border px-4 py-2">
                         <div className="flex items-center space-x-2">
                             <Link
-                            href={`/questionnaires/${questionnaire.id}/edit`}
+                            href={`/rating-links/${rating_link.id}/edit`}
                             className="text-yellow-600 hover:underline text-sm"
                             >
                             <Edit className="w-4 h-4" />
                             </Link>
                             <Link
-                            href={`/questionnaires/${questionnaire.id}`}
+                            href={`/rating-links/${rating_link.id}`}
                             method="delete"
                             as="button"
                             className="text-red-600 hover:underline text-sm"

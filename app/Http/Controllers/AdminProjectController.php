@@ -78,7 +78,6 @@ class AdminProjectController extends Controller
             'pic_name' => $request->pic_name,
             'pic_email' => $request->pic_email,
             'pic_phone' => $request->pic_phone,
-            'user_id' => Auth::id()
         ]);
 
         return redirect()->route('projects.index')->with('success', 'Pekerjaan berhasil diperbarui.');

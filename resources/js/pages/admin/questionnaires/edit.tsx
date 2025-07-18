@@ -22,7 +22,7 @@ export default function EditQuestionnaire({ questionnaire }: EditQuestionnairePr
         { title: `Edit: ${questionnaire.title}`, href: `/questionnaires/${questionnaire.id}/edit` },
     ];
 
-    const { data, setData, put, processing, errors } = useForm({
+    const { data, setData, processing, errors } = useForm({
         title: questionnaire.title || '',
         description: questionnaire.description || '',
         questions: questionnaire.questions?.map((q: Question) => ({
