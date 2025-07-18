@@ -24,7 +24,6 @@ const breadcrumbs: BreadcrumbItem[] = [
 
 export default function Projects() {
   const { projects } = usePage<PageProps>().props;
-  const currentUrl = usePage().url;
 
   return (
     <AppLayout breadcrumbs={breadcrumbs}>

@@ -61,6 +61,7 @@ export interface Questionnaire {
     id: number;
     title: string;
     description: string;
+    questions: Question[];
     rating_links: RatingLink[];
 }
 
