@@ -8,7 +8,12 @@ use Illuminate\Database\Eloquent\Model;
 class ResponseDetail extends Model
 {
     use HasFactory;
-    protected $guarded = ['id'];
+
+    protected $fillable = [
+        'response_id',
+        'question_id',
+        'answer',
+    ];
 
     public function response()
     {
@@ -18,10 +23,5 @@ class ResponseDetail extends Model
     public function question()
     {
         return $this->belongsTo(Question::class);
-    }
-
-    public function answerOption()
-    {
-        return $this->belongsTo(AnswerOption::class);
     }
 }

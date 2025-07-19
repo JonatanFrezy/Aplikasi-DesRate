@@ -1,22 +1,20 @@
-<?php
-
 namespace App\Models;
 
-use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
 class Response extends Model
 {
-    use HasFactory;
-    protected $guarded = ['id'];
+    protected $fillable = ['user_id', 'question_id', 'answer'];
 
-    public function ratingLink()
-    {
-        return $this->belongsTo(RatingLink::class);
+    public function user() {
+        return $this->belongsTo(User::class);
     }
 
-    public function responseDetails()
-    {
-        return $this->hasMany(ResponseDetail::class);
+    public function question() {
+        return $this->belongsTo(Question::class);
     }
+}
+public function responseDetails()
+{
+    return $this->hasMany(ResponseDetail::class);
 }
