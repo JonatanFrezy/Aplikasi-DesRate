@@ -12,6 +12,7 @@ import {
   LogOut,
   Menu,
   X,
+  Link2,
 } from 'lucide-react';
 
 export default function AppSidebarLayout({
@@ -90,6 +91,18 @@ export default function AppSidebarLayout({
           >
             <ClipboardList className="w-5 h-5" />
             <span>Kuesioner</span>
+          </Link>
+
+          <Link
+            href="/rating-links"
+            className={`flex items-center space-x-3 px-4 py-3 rounded-full ${
+              isActive('/rating-links')
+                ? 'bg-white text-blue-700 font-bold'
+                : 'hover:bg-blue-600'
+            }`}
+          >
+            <Link2 className="w-5 h-5" />
+            <span>Link Rating</span>
           </Link>
 
           {/* Tombol Logout */}

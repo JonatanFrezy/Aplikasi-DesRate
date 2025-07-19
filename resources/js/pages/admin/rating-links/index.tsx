@@ -1,7 +1,8 @@
 import { Head, Link, usePage } from '@inertiajs/react';
 import AppLayout from '@/layouts/app-layout';
 import { type BreadcrumbItem } from '@/types';
-import { Delete, Edit } from 'lucide-react';
+import { Copy, Delete, Edit } from 'lucide-react';
+import { Button } from '@/components/ui/button';
 
 type RatingLink = {
     id: number;
@@ -21,6 +22,9 @@ type RatingLink = {
 
 type PageProps = {
     rating_links: RatingLink[];
+    flash?: {
+        link?: RatingLink;
+    };
 };
 
 const breadcrumbs: BreadcrumbItem[] = [
@@ -31,7 +35,8 @@ const breadcrumbs: BreadcrumbItem[] = [
 ];
 
 export default function RatingLinks() {
-    const { rating_links } = usePage<PageProps>().props;
+    const { rating_links, flash } = usePage<PageProps>().props;
+    const link = flash?.link;
 
     return (
         <AppLayout breadcrumbs={breadcrumbs}>
@@ -67,7 +72,24 @@ export default function RatingLinks() {
                 rating_links.map((rating_link, index) => (
                     <tr key={rating_link.id}>
                     <td className="border px-4 py-2">{index + 1}</td>
-                    <td className="border px-4 py-2">{rating_link.link}</td>
+                    <td className="border px-4 py-2">
+                        <div className="flex items-center gap-2">
+                        {rating_link.link}
+                            <button
+                                onClick={() => {
+                                    if (rating_link.link) {
+                                        navigator.clipboard.writeText(rating_link.link);
+                                        alert('Link berhasil disalin!');
+                                    } else {
+                                        alert('Link tidak tersedia!');
+                                    }
+                                }}
+                                className="text-blue-600 hover:underline"
+                                >
+                                <Copy className="w-4 h-4" />
+                            </button>
+                        </div>
+                    </td>
                     <td className="border px-4 py-2">
                         {rating_link.project?.title ?? '-'}
                     </td>
@@ -77,7 +99,7 @@ export default function RatingLinks() {
                     <td className="border px-4 py-2">{rating_link.send_to_name}</td>
                     <td className="border px-4 py-2">{rating_link.send_to_email}</td>
                     <td className="border px-4 py-2">{rating_link.send_to_phone}</td>
-                    <td className="border px-4 py-2">{rating_link.is_used}</td>
+                    <td className="border px-4 py-2">{rating_link.is_used ? 'Sudah Terjawab' : 'Belum Terjawab'}</td>
                     <td className="border px-4 py-2">
                         <div className="flex items-center space-x-2">
                             <Link

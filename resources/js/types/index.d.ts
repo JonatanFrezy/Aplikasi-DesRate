@@ -89,3 +89,19 @@ export interface AnswerOption {
         is_required: boolean;
     };
 }
+
+export interface RatingLink {
+    id: number;
+    token: string;
+    link?: string; 
+    send_to_name: string;
+    send_to_email: string;
+    send_to_phone: string;
+    is_used: boolean;
+    project?: {
+        title: string;
+    };
+    questionnaire?: {
+        title: string;
+    };
+}

@@ -15,7 +15,11 @@ class AdminRatingLinkController extends Controller
 {
     public function index(): Response
     {
-        $ratingLinks = RatingLink::with(['project', 'questionnaire'])->get();
+        $ratingLinks = RatingLink::with(['project', 'questionnaire'])->get()
+            ->map(function ($ratingLink) {
+                $ratingLink->link = route('rating.form', ['token' => $ratingLink->token]);
+                return $ratingLink;
+            });
 
         return Inertia::render('admin/rating-links/index', [
             'rating_links' => $ratingLinks
@@ -52,12 +56,7 @@ class AdminRatingLinkController extends Controller
             'questionnaire_id' => $request->questionnaire_id,
         ]);
 
-        $link = route('rating.form', ['token' => $ratingLink->token]);
-
-        return redirect()->route('rating-links.index')->with([
-            'success' => 'Link Rating berhasil ditambahkan.',
-            'link' => $link,
-        ]);
+        return redirect()->route('rating-links.index')->with('success', 'Link Rating berhasil ditambahkan.');
     }
 
     public function edit($id): Response
@@ -97,12 +96,7 @@ class AdminRatingLinkController extends Controller
             'questionnaire_id' => $request->questionnaire_id,
         ]);
 
-        $link = route('rating.form', ['token' => $ratingLink->token]);
-
-        return redirect()->route('rating-links.index')->with([
-            'success' => 'Link Rating berhasil diperbarui.',
-            'link' => $link,
-        ]);
+        return redirect()->route('rating-links.index')->with('success', 'Link Rating berhasil diperbarui.');
     }
 
     public function destroy($id): RedirectResponse

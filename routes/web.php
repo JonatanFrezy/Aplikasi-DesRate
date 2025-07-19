@@ -3,6 +3,7 @@
 use App\Http\Controllers\AdminProjectController;
 use App\Http\Controllers\AdminQuestionnaireController;
 use App\Http\Controllers\AdminRatingLinkController;
+use App\Http\Controllers\RatingFormController;
 use App\Http\Controllers\Auth\AuthenticatedSessionController;
 use Illuminate\Support\Facades\Route;
 use Inertia\Inertia;
@@ -30,6 +31,8 @@ Route::middleware(['auth', 'verified'])->group(function () {
 Route::middleware(['auth', 'verified'])->group(function () {
     Route::resource('rating-links', AdminRatingLinkController::class);
 });
+
+Route::get('/rating/{token}', [RatingFormController::class, 'show'])->name('rating.form');
 
 require __DIR__.'/settings.php';
 require __DIR__.'/auth.php';

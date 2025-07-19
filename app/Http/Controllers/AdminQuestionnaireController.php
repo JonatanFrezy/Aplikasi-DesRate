@@ -65,8 +65,7 @@ class AdminQuestionnaireController extends Controller
             }
         }
 
-        return redirect()->route('questionnaires.index')
-            ->with('success', 'Kuesioner dan pertanyaan berhasil ditambahkan.');
+        return redirect()->route('questionnaires.index')->with('success', 'Kuesioner berhasil ditambahkan.');
     }
 
 
