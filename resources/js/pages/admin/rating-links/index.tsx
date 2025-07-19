@@ -2,7 +2,6 @@ import { Head, Link, usePage } from '@inertiajs/react';
 import AppLayout from '@/layouts/app-layout';
 import { type BreadcrumbItem } from '@/types';
 import { Copy, Delete, Edit } from 'lucide-react';
-import { Button } from '@/components/ui/button';
 
 type RatingLink = {
     id: number;
@@ -35,8 +34,7 @@ const breadcrumbs: BreadcrumbItem[] = [
 ];
 
 export default function RatingLinks() {
-    const { rating_links, flash } = usePage<PageProps>().props;
-    const link = flash?.link;
+    const { rating_links } = usePage<PageProps>().props;
 
     return (
         <AppLayout breadcrumbs={breadcrumbs}>
