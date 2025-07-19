@@ -61,7 +61,7 @@ class AdminRatingLinkController extends Controller
 
     public function edit($id): Response
     {
-        $ratingLink = RatingLink::findOrFail($id);
+        $ratingLink = RatingLink::with(['project', 'questionnaire'])->findOrFail($id);
         $projects = Project::all();
         $questionnaires = Questionnaire::all();
 

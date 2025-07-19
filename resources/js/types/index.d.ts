@@ -98,6 +98,8 @@ export interface RatingLink {
     send_to_email: string;
     send_to_phone: string;
     is_used: boolean;
+    project_id: number;
+    questionnaire_id: number;
     project?: {
         title: string;
     };
