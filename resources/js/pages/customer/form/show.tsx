@@ -13,9 +13,6 @@ interface CreateRatingFormProps {
 
 export default function RatingForm({ rating_link }: CreateRatingFormProps) {
     const { project, questionnaire } = rating_link;
-    if (!project || !questionnaire) {
-        return <div className="container my-4">Memuat data...</div>;
-    }
 
     const { data, setData, post, processing, errors } = useForm<{
         response_details: {
@@ -24,12 +21,15 @@ export default function RatingForm({ rating_link }: CreateRatingFormProps) {
             question_id: number;
         }[];
     }>({
-        response_details: questionnaire.questions.map((q) => ({
+        response_details: questionnaire?.questions.map((q) => ({
             answer_text: null,
             selected_option_id: null,
             question_id: q.id,
-        })),
+        })) ?? [], 
     });
+    if (!project || !questionnaire) {
+        return <div className="container my-4">Memuat data...</div>;
+    }
 
 
     const submit: FormEventHandler = (e) => {
@@ -83,7 +83,7 @@ export default function RatingForm({ rating_link }: CreateRatingFormProps) {
                                         setData('response_details', newResponses);
                                     }}
                                     />
-                                    <InputError message={(errors.response_details as any)?.[index]?.answer_text} />
+                                    <InputError message={(errors as Record<string, string>)[`response_details.${index}.answer_text`] ?? ''} />
                                 </>
                             )}
 
@@ -114,7 +114,7 @@ export default function RatingForm({ rating_link }: CreateRatingFormProps) {
                                             </Label>
                                         </div>
                                     ))}
-                                    <InputError message={(errors.response_details as any)?.[index]?.selected_option_id} />
+                                    <InputError message={(errors as Record<string, string>)[`response_details.${index}.selected_option_id`] ?? ''} />
                                 </>
                             )}
                         </div>
