@@ -47,7 +47,7 @@ class AdminRatingLinkController extends Controller
             'questionnaire_id' => 'required|exists:questionnaires,id',
         ]);
 
-        $ratingLink = RatingLink::create([
+        RatingLink::create([
             'token' => Str::uuid(),
             'send_to_name' => $request->send_to_name,
             'send_to_email' => $request->send_to_email,

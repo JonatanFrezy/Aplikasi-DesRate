@@ -33,6 +33,10 @@ Route::middleware(['auth', 'verified'])->group(function () {
 });
 
 Route::get('/rating/{token}', [RatingFormController::class, 'show'])->name('rating.form');
+Route::post('/rating/{token}', [RatingFormController::class, 'store'])->name('rating.form');
+Route::get('/rating/{token}/success', function () {
+        return Inertia::render('customer/alert/success');
+    })->name('rating.success');
 
 require __DIR__.'/settings.php';
 require __DIR__.'/auth.php';

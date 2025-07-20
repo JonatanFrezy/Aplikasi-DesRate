@@ -14,7 +14,7 @@ return new class extends Migration
         Schema::create('response_details', function (Blueprint $table) {
             $table->id();
             $table->text('answer_text')->nullable();
-            $table->foreignId('selected_option')
+            $table->foreignId('selected_option_id')
                 ->nullable()
                 ->constrained('answer_options')
                 ->noActionOnUpdate()

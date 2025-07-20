@@ -17,6 +17,14 @@ return new class extends Migration
                 ->constrained('rating_links')
                 ->noActionOnUpdate()
                 ->cascadeOnDelete();
+            $table->foreignId('project_id')
+                ->constrained('projects')
+                ->noActionOnUpdate()
+                ->cascadeOnDelete();
+            $table->foreignId('questionnaire_id')
+                ->constrained('questionnaires')
+                ->noActionOnUpdate()
+                ->cascadeOnDelete();
             $table->timestamp('submitted_at')->useCurrent();
         });
     }

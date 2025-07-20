@@ -19,4 +19,9 @@ class Questionnaire extends Model
     {
         return $this->hasMany(RatingLink::class);
     }
+
+    public function responses()
+    {
+        return $this->hasMany(Response::class);
+    }
 }

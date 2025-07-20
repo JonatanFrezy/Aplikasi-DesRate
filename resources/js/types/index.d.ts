@@ -69,7 +69,7 @@ export interface Question {
     id: number;
     text: string;
     type: string;
-    order_number: integer;
+    order_number: number;
     is_required: boolean;
     questionnaire?: {
         title: string;
@@ -80,12 +80,12 @@ export interface Question {
 
 export interface AnswerOption {
     id: number;
-    value: integer;
+    value: number;
     label: string;
     question?: {
         text: string;
         type: string;
-        order_number: integer;
+        order_number: number;
         is_required: boolean;
     };
 }
@@ -100,10 +100,24 @@ export interface RatingLink {
     is_used: boolean;
     project_id: number;
     questionnaire_id: number;
-    project?: {
-        title: string;
-    };
-    questionnaire?: {
-        title: string;
-    };
+    project?: Project;
+    questionnaire?: Questionnaire;
+}
+
+export interface Response {
+    id: number;
+    project_id: number;
+    questionnaire_id: number;
+    rating_link_id: number;
+    project?: Project;
+    questionnaire?: Questionnaire;
+    rating_link?: RatingLink;
+    response_details: ResponseDetail[];
+}
+
+export interface ResponseDetail {
+    id: number;
+    question_id: number;
+    answer_text: string | null;
+    selected_option_id: number | null;
 }
