@@ -3,6 +3,7 @@
 use App\Http\Controllers\AdminProjectController;
 use App\Http\Controllers\AdminQuestionnaireController;
 use App\Http\Controllers\AdminRatingLinkController;
+use App\Http\Controllers\HODProjectController;
 use App\Http\Controllers\HODResponseController;
 use App\Http\Controllers\RatingFormController;
 use App\Http\Controllers\Auth\AuthenticatedSessionController;
@@ -31,6 +32,10 @@ Route::middleware(['auth', 'verified', 'role:admin'])->group(function () {
 
 Route::middleware(['auth', 'verified', 'role:admin'])->group(function () {
     Route::resource('rating-links', AdminRatingLinkController::class);
+});
+
+Route::middleware(['auth', 'verified', 'role:hod'])->group(function () {
+    Route::resource('projects', HODProjectController::class);
 });
 
 Route::middleware(['auth', 'verified', 'role:hod'])->group(function () {

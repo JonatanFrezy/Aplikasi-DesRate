@@ -27,7 +27,7 @@ class HODResponseController extends Controller
             return $response;
         });
 
-        return Inertia::render('hod/response/index', [
+        return Inertia::render('hod/responses/index', [
             'responses' => $responses
         ]);
     }
@@ -51,7 +51,7 @@ class HODResponseController extends Controller
 
         $response->average_rating = $average ? round($average, 2) : null;
 
-        return Inertia::render('hod/response/show', [
+        return Inertia::render('hod/responses/show', [
             'response' => $response,
         ]);
     }
