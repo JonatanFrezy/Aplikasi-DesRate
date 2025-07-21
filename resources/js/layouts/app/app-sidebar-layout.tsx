@@ -84,9 +84,9 @@ export default function AppSidebarLayout({
             </Link>
 
             <Link
-              href="/projects"
+              href="/admin/projects"
               className={`flex items-center space-x-3 px-4 py-3 rounded-full ${
-                isActive('/projects')
+                isActive('/admin/projects')
                   ? 'bg-white text-blue-700 font-bold'
                   : 'hover:bg-blue-600'
               }`}
@@ -96,9 +96,9 @@ export default function AppSidebarLayout({
             </Link>
 
             <Link
-              href="/questionnaires"
+              href="/admin/questionnaires"
               className={`flex items-center space-x-3 px-4 py-3 rounded-full ${
-                isActive('/questionnaires')
+                isActive('/admin/questionnaires')
                   ? 'bg-white text-blue-700 font-bold'
                   : 'hover:bg-blue-600'
               }`}
@@ -108,9 +108,9 @@ export default function AppSidebarLayout({
             </Link>
 
             <Link
-              href="/rating-links"
+              href="/admin/rating-links"
               className={`flex items-center space-x-3 px-4 py-3 rounded-full ${
-                isActive('/rating-links')
+                isActive('/admin/rating-links')
                   ? 'bg-white text-blue-700 font-bold'
                   : 'hover:bg-blue-600'
               }`}
@@ -136,9 +136,9 @@ export default function AppSidebarLayout({
             </Link>
 
             <Link
-              href="/projects"
+              href="/hod/projects"
               className={`flex items-center space-x-3 px-4 py-3 rounded-full ${
-                isActive('/projects')
+                isActive('/hod/projects')
                   ? 'bg-white text-blue-700 font-bold'
                   : 'hover:bg-blue-600'
               }`}
@@ -148,9 +148,9 @@ export default function AppSidebarLayout({
             </Link>
 
             <Link
-              href="/responses"
+              href="/hod/responses"
               className={`flex items-center space-x-3 px-4 py-3 rounded-full ${
-                isActive('/responses')
+                isActive('/hod/responses')
                   ? 'bg-white text-blue-700 font-bold'
                   : 'hover:bg-blue-600'
               }`}

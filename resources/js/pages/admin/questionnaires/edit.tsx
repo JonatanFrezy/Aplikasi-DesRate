@@ -18,8 +18,8 @@ interface EditQuestionnaireProps {
 
 export default function EditQuestionnaire({ questionnaire }: EditQuestionnaireProps) {
     const breadcrumbs: BreadcrumbItem[] = [
-        { title: 'Kuesioner', href: '/questionnaires' },
-        { title: `Edit: ${questionnaire.title}`, href: `/questionnaires/${questionnaire.id}/edit` },
+        { title: 'Kuesioner', href: '/admin/questionnaires' },
+        { title: `Edit: ${questionnaire.title}`, href: `/admin/questionnaires/${questionnaire.id}/edit` },
     ];
 
     const { data, setData, processing, errors } = useForm({
@@ -126,7 +126,7 @@ export default function EditQuestionnaire({ questionnaire }: EditQuestionnairePr
             questions: cleanedQuestions,
         };
 
-        router.put(`/questionnaires/${questionnaire.id}`, formData);
+        router.put(`/admin/questionnaires/${questionnaire.id}`, formData);
     };
 
     return (

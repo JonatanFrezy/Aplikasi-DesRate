@@ -15,8 +15,8 @@ interface EditProjectProps {
 
 export default function EditProject({ project }: EditProjectProps) {
     const breadcrumbs: BreadcrumbItem[] = [
-        { title: 'Pekerjaan', href: '/projects' },
-        { title: `Edit: ${project.title}`, href: `/projects/${project.id}/edit` },
+        { title: 'Pekerjaan', href: '/admin/projects' },
+        { title: `Edit: ${project.title}`, href: `/admin/projects/${project.id}/edit` },
     ];
 
     const {
@@ -37,12 +37,12 @@ export default function EditProject({ project }: EditProjectProps) {
 
     const submit: FormEventHandler = (e) => {
         e.preventDefault();
-        put(`/projects/${project.id}`);
+        put(`/admin/projects/${project.id}`);
     };
 
     const handleDelete = () => {
         if (confirm('Yakin ingin menghapus data ini?')) {
-            destroy(`/projects/${project.id}`);
+            destroy(`/admin/projects/${project.id}`);
         }
     };
 

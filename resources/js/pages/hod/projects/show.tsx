@@ -10,8 +10,8 @@ interface ShowProjectProps {
 
 export default function ShowProject({ project }: ShowProjectProps) {
     const breadcrumbs: BreadcrumbItem[] = [
-        { title: 'Pekerjaan', href: '/projects' },
-        { title: `Detail: ${project.title}`, href: `/projects/${project.id}` },
+        { title: 'Pekerjaan', href: '/hod/projects' },
+        { title: `Detail: ${project.title}`, href: `/hod/projects/${project.id}` },
     ];
 
     return (

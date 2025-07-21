@@ -11,8 +11,8 @@ interface ShowResponseProps {
 
 export default function ShowResponse({ response }: ShowResponseProps) {
     const breadcrumbs: BreadcrumbItem[] = [
-        { title: 'Jawaban', href: '/responses' },
-        { title: `Jawaban #${response.id}`, href: `/responses/${response.id}` },
+        { title: 'Jawaban', href: '/hod/responses' },
+        { title: `Jawaban #${response.id}`, href: `/hod/responses/${response.id}` },
     ];
 
     return (

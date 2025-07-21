@@ -29,7 +29,7 @@ type PageProps = {
 const breadcrumbs: BreadcrumbItem[] = [
     {
         title: 'Link Rating',
-        href: '/rating-links',
+        href: '/admin/rating-links',
     },
 ];
 
@@ -43,7 +43,7 @@ export default function RatingLinks() {
         <div className="flex justify-between items-center my-3 mx-3">
             <h1 className="text-2xl font-bold">Daftar Link Rating</h1>
             <Link
-            href="/rating-links/create"
+            href="/admin/rating-links/create"
             className="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-md text-sm"
             >
             Tambah Link Rating
@@ -101,13 +101,13 @@ export default function RatingLinks() {
                     <td className="border px-4 py-2">
                         <div className="flex items-center space-x-2">
                             <Link
-                            href={`/rating-links/${rating_link.id}/edit`}
+                            href={`/admin/rating-links/${rating_link.id}/edit`}
                             className="text-yellow-600 hover:underline text-sm"
                             >
                             <Edit className="w-4 h-4" />
                             </Link>
                             <Link
-                            href={`/rating-links/${rating_link.id}`}
+                            href={`/admin/rating-links/${rating_link.id}`}
                             method="delete"
                             as="button"
                             className="text-red-600 hover:underline text-sm"

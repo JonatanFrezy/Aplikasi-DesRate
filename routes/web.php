@@ -1,12 +1,14 @@
 <?php
 
 use App\Http\Controllers\AdminProjectController;
+use App\Http\Controllers\DashboardController;
+use App\Http\Controllers\SharedProjectController;
 use App\Http\Controllers\AdminQuestionnaireController;
 use App\Http\Controllers\AdminRatingLinkController;
-use App\Http\Controllers\HODProjectController;
 use App\Http\Controllers\HODResponseController;
 use App\Http\Controllers\RatingFormController;
 use App\Http\Controllers\Auth\AuthenticatedSessionController;
+use App\Http\Controllers\HODProjectController;
 use Illuminate\Support\Facades\Route;
 use Inertia\Inertia;
 
@@ -15,31 +17,19 @@ Route::get('/', function () {
 })->name('home');
 Route::post('/logout', [AuthenticatedSessionController::class, 'destroy'])->name('logout');
 
-
 Route::middleware(['auth', 'verified'])->group(function () {
-    Route::get('dashboard', function () {
-        return Inertia::render('dashboard');
-    })->name('dashboard');
+    Route::get('/dashboard', [DashboardController::class, 'index'])->name('dashboard');
 });
 
-Route::middleware(['auth', 'verified', 'role:admin'])->group(function () {
-    Route::resource('projects', AdminProjectController::class);
+Route::middleware(['auth', 'verified', 'role:admin'])->prefix('admin')->name('admin.')->group(function () {
+    Route::resource('projects', AdminProjectController::class)->names('projects');
+    Route::resource('questionnaires', AdminQuestionnaireController::class)->names('questionnaires');
+    Route::resource('rating-links', AdminRatingLinkController::class)->names('rating-links');
 });
 
-Route::middleware(['auth', 'verified', 'role:admin'])->group(function () {
-    Route::resource('questionnaires', AdminQuestionnaireController::class);
-});
-
-Route::middleware(['auth', 'verified', 'role:admin'])->group(function () {
-    Route::resource('rating-links', AdminRatingLinkController::class);
-});
-
-Route::middleware(['auth', 'verified', 'role:hod'])->group(function () {
-    Route::resource('projects', HODProjectController::class);
-});
-
-Route::middleware(['auth', 'verified', 'role:hod'])->group(function () {
-    Route::resource('responses', HODResponseController::class);
+Route::middleware(['auth', 'verified', 'role:hod'])->prefix('hod')->name('hod.')->group(function () {
+    Route::resource('projects', HODProjectController::class)->names('projects');
+    Route::resource('responses', HODResponseController::class)->names('responses');
 });
 
 Route::get('/rating/{token}', [RatingFormController::class, 'show'])->name('rating.form');

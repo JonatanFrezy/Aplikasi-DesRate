@@ -14,8 +14,8 @@ interface CreateRatingLinkProps {
 }
 
 const breadcrumbs: BreadcrumbItem[] = [
-  { title: 'Link Rating', href: '/rating-links' },
-  { title: 'Tambah', href: '/rating-links/create' },
+  { title: 'Link Rating', href: '/admin/rating-links' },
+  { title: 'Tambah', href: '/admin/rating-links/create' },
 ];
 
 export default function CreateRatingLink({ projects, questionnaires }: CreateRatingLinkProps) {
@@ -29,7 +29,7 @@ export default function CreateRatingLink({ projects, questionnaires }: CreateRat
 
     const submit: FormEventHandler = (e) => {
         e.preventDefault();
-        post('/rating-links');
+        post('/admin/rating-links');
     };
 
     return (

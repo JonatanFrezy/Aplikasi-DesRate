@@ -56,7 +56,7 @@ class AdminRatingLinkController extends Controller
             'questionnaire_id' => $request->questionnaire_id,
         ]);
 
-        return redirect()->route('rating-links.index')->with('success', 'Link Rating berhasil ditambahkan.');
+        return redirect()->route('admin.rating-links.index')->with('success', 'Link Rating berhasil ditambahkan.');
     }
 
     public function edit($id): Response
@@ -77,7 +77,7 @@ class AdminRatingLinkController extends Controller
         $ratingLink = RatingLink::findOrFail($id);
 
         if ($ratingLink->is_used) {
-            return redirect()->route('rating-links.index')->withErrors(['error' => 'Link sudah digunakan dan tidak bisa diubah.']);
+            return redirect()->route('admin.rating-links.index')->withErrors(['error' => 'Link sudah digunakan dan tidak bisa diubah.']);
         }
 
         $request->validate([
@@ -96,7 +96,7 @@ class AdminRatingLinkController extends Controller
             'questionnaire_id' => $request->questionnaire_id,
         ]);
 
-        return redirect()->route('rating-links.index')->with('success', 'Link Rating berhasil diperbarui.');
+        return redirect()->route('admin.rating-links.index')->with('success', 'Link Rating berhasil diperbarui.');
     }
 
     public function destroy($id): RedirectResponse
@@ -104,6 +104,6 @@ class AdminRatingLinkController extends Controller
         $ratingLink = RatingLink::findOrFail($id);
         $ratingLink->delete();
         
-        return redirect()->route('rating-links.index')->with('success', 'Link Rating berhasil dihapus.');
+        return redirect()->route('admin.rating-links.index')->with('success', 'Link Rating berhasil dihapus.');
     }
 }

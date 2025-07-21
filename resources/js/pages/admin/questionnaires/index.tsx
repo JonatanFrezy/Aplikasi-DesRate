@@ -27,7 +27,7 @@ type PageProps = {
 const breadcrumbs: BreadcrumbItem[] = [
     {
         title: 'Kuesioner',
-        href: '/questionnaires',
+        href: '/admin/questionnaires',
     },
 ];
 
@@ -41,7 +41,7 @@ export default function Questionnaires() {
         <div className="flex justify-between items-center my-3 mx-3">
             <h1 className="text-2xl font-bold">Daftar Kuesioner</h1>
             <Link
-            href="/questionnaires/create"
+            href="/admin/questionnaires/create"
             className="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-md text-sm"
             >
             Tambah Kuesioner
@@ -70,13 +70,13 @@ export default function Questionnaires() {
                     <td className="border px-4 py-2">
                         <div className="flex items-center space-x-2">
                             <Link
-                            href={`/questionnaires/${questionnaire.id}/edit`}
+                            href={`/admin/questionnaires/${questionnaire.id}/edit`}
                             className="text-yellow-600 hover:underline text-sm"
                             >
                             <Edit className="w-4 h-4" />
                             </Link>
                             <Link
-                            href={`/questionnaires/${questionnaire.id}`}
+                            href={`/admin/questionnaires/${questionnaire.id}`}
                             method="delete"
                             as="button"
                             className="text-red-600 hover:underline text-sm"

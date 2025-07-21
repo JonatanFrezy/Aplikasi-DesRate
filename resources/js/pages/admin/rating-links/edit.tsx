@@ -16,8 +16,8 @@ interface EditRatingLinkProps {
 
 export default function CreateRatingLink({ rating_link, projects, questionnaires }: EditRatingLinkProps) {
     const breadcrumbs: BreadcrumbItem[] = [
-        { title: 'Link Rating', href: '/rating-links' },
-        { title: `Edit: ${rating_link.link}`, href: `/questionnaires/${rating_link.id}/edit` },
+        { title: 'Link Rating', href: '/admin/rating-links' },
+        { title: `Edit: ${rating_link.link}`, href: `/admin/rating-links/${rating_link.id}/edit` },
     ];
 
     const { data, setData, put, processing, errors } = useForm({
@@ -30,7 +30,7 @@ export default function CreateRatingLink({ rating_link, projects, questionnaires
 
     const submit: FormEventHandler = (e) => {
         e.preventDefault();
-        put(`/rating-links/${rating_link.id}`);
+        put(`/admin/rating-links/${rating_link.id}`);
     };
 
     return (

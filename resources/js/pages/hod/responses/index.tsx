@@ -29,7 +29,7 @@ type PageProps = {
 const breadcrumbs: BreadcrumbItem[] = [
     {
         title: 'Jawaban',
-        href: '/responses',
+        href: '/hod/responses',
     },
 ];
 
@@ -90,7 +90,7 @@ export default function Responses() {
                     <td className="border px-4 py-2">
                         <div className="flex items-center space-x-2">
                             <Link
-                            href={`/responses/${response.id}`}
+                            href={`/hod/responses/${response.id}`}
                             className="text-xs bg-blue-600 hover:bg-blue-700 text-white px-3 py-1 rounded-md"
                           >
                             View Detail

@@ -18,7 +18,7 @@ type PageProps = {
 };
 
 const breadcrumbs: BreadcrumbItem[] = [
-  { title: 'Pekerjaan', href: '/projects' },
+  { title: 'Pekerjaan', href: '/hod/projects' },
 ];
 
 export default function Projects() {
@@ -40,10 +40,6 @@ export default function Projects() {
                 placeholder="Search..."
                 className="w-full sm:w-72 px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
               />
-
-              <Link href="/projects/create" className="text-blue-600 hover:underline">
-                <Edit className="w-5 h-5" />
-              </Link>
 
               <div className="bg-blue-600 text-white px-4 py-2 rounded-full font-semibold text-sm text-center w-full sm:w-auto">
                 HOD
@@ -85,7 +81,7 @@ export default function Projects() {
                         <td className="px-4 py-3">{project.pic_phone}</td>
                         <td className="px-4 py-3">
                           <Link
-                            href={`/projects/${project.id}`}
+                            href={`/hod/projects/${project.id}`}
                             className="text-xs bg-blue-600 hover:bg-blue-700 text-white px-3 py-1 rounded-md"
                           >
                             View Detail

@@ -9,8 +9,8 @@ import { LoaderCircle } from 'lucide-react';
 import InputError from '@/components/input-error';
 
 const breadcrumbs: BreadcrumbItem[] = [
-  { title: 'Pekerjaan', href: '/projects' },
-  { title: 'Tambah', href: '/projects/create' },
+  { title: 'Pekerjaan', href: '/admin/projects' },
+  { title: 'Tambah', href: '/admin/projects/create' },
 ];
 
 export default function CreateProject() {
@@ -25,7 +25,7 @@ export default function CreateProject() {
 
     const submit: FormEventHandler = (e) => {
         e.preventDefault();
-        post('/projects');
+        post('/admin/projects');
     };
 
     return (

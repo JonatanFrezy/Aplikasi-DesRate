@@ -65,7 +65,7 @@ class AdminQuestionnaireController extends Controller
             }
         }
 
-        return redirect()->route('questionnaires.index')->with('success', 'Kuesioner berhasil ditambahkan.');
+        return redirect()->route('admin.questionnaires.index')->with('success', 'Kuesioner berhasil ditambahkan.');
     }
 
 
@@ -127,7 +127,7 @@ class AdminQuestionnaireController extends Controller
             }
         }
 
-        return redirect()->route('questionnaires.index')->with('success', 'Kuesioner berhasil diperbarui.');
+        return redirect()->route('admin.questionnaires.index')->with('success', 'Kuesioner berhasil diperbarui.');
     }
 
     public function destroy($id): RedirectResponse
@@ -135,6 +135,6 @@ class AdminQuestionnaireController extends Controller
         $questionnaire = Questionnaire::findOrFail($id);
         $questionnaire->delete();
 
-        return redirect()->route('questionnaires.index')->with('success', 'Kuesioner berhasil dihapus.');
+        return redirect()->route('admin.questionnaires.index')->with('success', 'Kuesioner berhasil dihapus.');
     }
 }

@@ -13,11 +13,11 @@ import { Checkbox } from '@/components/ui/checkbox';
 const breadcrumbs: BreadcrumbItem[] = [
   {
     title: 'Kuesioner',
-    href: '/questionnaires',
+    href: '/admin/questionnaires',
   },
   {
     title: 'Tambah',
-    href: '/questionnaires/create',
+    href: '/admin/questionnaires/create',
   },
 ];
 
@@ -113,7 +113,7 @@ export default function CreateQuestionnaire() {
             questions: cleanedQuestions,
         };
 
-        router.post('/questionnaires', formData);
+        router.post('/admin/questionnaires', formData);
     };
 
     return (
