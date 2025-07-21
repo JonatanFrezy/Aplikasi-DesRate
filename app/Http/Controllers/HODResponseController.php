@@ -31,4 +31,28 @@ class HODResponseController extends Controller
             'responses' => $responses
         ]);
     }
+
+    public function show($id): Response
+    {
+        $response = FormResponse::with([
+            'project',
+            'questionnaire',
+            'ratingLink',
+            'responseDetails.question',
+            'responseDetails.answerOption',
+            'responseDetails.question.answerOptions',
+        ])->findOrFail($id);
+
+        // Hitung nilai rata-rata dari opsi nilai
+        $average = $response->responseDetails
+            ->filter(fn ($detail) => $detail->answerOption?->value !== null)
+            ->pluck('answerOption.value')
+            ->avg();
+
+        $response->average_rating = $average ? round($average, 2) : null;
+
+        return Inertia::render('hod/response/show', [
+            'response' => $response,
+        ]);
+    }
 }

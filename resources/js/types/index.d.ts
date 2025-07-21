@@ -109,6 +109,7 @@ export interface Response {
     project_id: number;
     questionnaire_id: number;
     rating_link_id: number;
+    average_rating?: number | null; 
     submitted_at: string;
     project?: Project;
     questionnaire?: Questionnaire;
@@ -121,4 +122,6 @@ export interface ResponseDetail {
     question_id: number;
     answer_text: string | null;
     selected_option_id: number | null;
+    question: Question;
+    answer_option: AnswerOption;
 }

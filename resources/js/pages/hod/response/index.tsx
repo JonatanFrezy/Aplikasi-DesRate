@@ -1,7 +1,6 @@
 import { Head, Link, usePage } from '@inertiajs/react';
 import AppLayout from '@/layouts/app-layout';
 import { type BreadcrumbItem } from '@/types';
-import { Delete, Edit } from 'lucide-react';
 
 type Response = {
     id: number;
@@ -91,7 +90,7 @@ export default function Responses() {
                     <td className="border px-4 py-2">
                         <div className="flex items-center space-x-2">
                             <Link
-                            href={`/responses/${response.id}/show`}
+                            href={`/responses/${response.id}`}
                             className="text-xs bg-blue-600 hover:bg-blue-700 text-white px-3 py-1 rounded-md"
                           >
                             View Detail
