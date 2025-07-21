@@ -126,7 +126,7 @@ export default function RatingLinks() {
                 ) : (
                 <tr>
                     <td colSpan={9} className="text-center px-4 py-6">
-                    Tidak ada data project.
+                    Tidak ada data link rating.
                     </td>
                 </tr>
                 )}

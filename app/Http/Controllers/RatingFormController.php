@@ -3,8 +3,6 @@
 namespace App\Http\Controllers;
 
 use App\Models\RatingLink;
-use App\Models\Response;
-use App\Models\ResponseDetail;
 use Illuminate\Http\Request;
 use Illuminate\Http\RedirectResponse;
 use Inertia\Inertia;

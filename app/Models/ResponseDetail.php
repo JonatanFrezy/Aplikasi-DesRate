@@ -23,6 +23,6 @@ class ResponseDetail extends Model
 
     public function answerOption()
     {
-        return $this->belongsTo(AnswerOption::class);
+        return $this->belongsTo(AnswerOption::class, 'selected_option_id');
     }
 }

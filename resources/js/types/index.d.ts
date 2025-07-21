@@ -109,6 +109,7 @@ export interface Response {
     project_id: number;
     questionnaire_id: number;
     rating_link_id: number;
+    submitted_at: string;
     project?: Project;
     questionnaire?: Questionnaire;
     rating_link?: RatingLink;

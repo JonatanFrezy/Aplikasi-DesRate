@@ -95,7 +95,7 @@ export default function Questionnaires() {
                 ) : (
                 <tr>
                     <td colSpan={9} className="text-center px-4 py-6">
-                    Tidak ada data project.
+                    Tidak ada data kuesioner.
                     </td>
                 </tr>
                 )}

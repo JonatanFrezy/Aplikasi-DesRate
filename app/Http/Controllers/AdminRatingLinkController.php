@@ -15,7 +15,7 @@ class AdminRatingLinkController extends Controller
 {
     public function index(): Response
     {
-        $ratingLinks = RatingLink::with(['project', 'questionnaire'])->get()
+        $ratingLinks = RatingLink::with(['project', 'questionnaire'])->latest()->get()
             ->map(function ($ratingLink) {
                 $ratingLink->link = route('rating.form', ['token' => $ratingLink->token]);
                 return $ratingLink;

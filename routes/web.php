@@ -3,6 +3,7 @@
 use App\Http\Controllers\AdminProjectController;
 use App\Http\Controllers\AdminQuestionnaireController;
 use App\Http\Controllers\AdminRatingLinkController;
+use App\Http\Controllers\HODResponseController;
 use App\Http\Controllers\RatingFormController;
 use App\Http\Controllers\Auth\AuthenticatedSessionController;
 use Illuminate\Support\Facades\Route;
@@ -20,16 +21,20 @@ Route::middleware(['auth', 'verified'])->group(function () {
     })->name('dashboard');
 });
 
-Route::middleware(['auth', 'verified'])->group(function () {
+Route::middleware(['auth', 'verified', 'role:admin'])->group(function () {
     Route::resource('projects', AdminProjectController::class);
 });
 
-Route::middleware(['auth', 'verified'])->group(function () {
+Route::middleware(['auth', 'verified', 'role:admin'])->group(function () {
     Route::resource('questionnaires', AdminQuestionnaireController::class);
 });
 
-Route::middleware(['auth', 'verified'])->group(function () {
+Route::middleware(['auth', 'verified', 'role:admin'])->group(function () {
     Route::resource('rating-links', AdminRatingLinkController::class);
+});
+
+Route::middleware(['auth', 'verified', 'role:hod'])->group(function () {
+    Route::resource('responses', HODResponseController::class);
 });
 
 Route::get('/rating/{token}', [RatingFormController::class, 'show'])->name('rating.form');

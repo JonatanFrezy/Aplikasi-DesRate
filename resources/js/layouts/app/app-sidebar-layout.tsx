@@ -13,7 +13,16 @@ import {
   Menu,
   X,
   Link2,
+  BarChart2,
 } from 'lucide-react';
+
+type AppPageProps = {
+  auth?: {
+    user?: {
+      role?: string;
+    };
+  };
+};
 
 export default function AppSidebarLayout({
   children,
@@ -23,6 +32,9 @@ export default function AppSidebarLayout({
   const currentUrl = usePage().url;
 
   const isActive = (path: string) => currentUrl.startsWith(path);
+
+  const page = usePage<AppPageProps>();
+  const userRole = page.props.auth?.user?.role ?? '';
 
   return (
     <AppShell variant="sidebar">
@@ -56,54 +68,86 @@ export default function AppSidebarLayout({
             </button>
           </div>
 
-          {/* Menu links */}
-          <Link
-            href="/dashboard"
-            className={`flex items-center space-x-3 px-4 py-3 rounded-full ${
-              isActive('/dashboard')
-                ? 'bg-white text-blue-700 font-bold'
-                : 'hover:bg-blue-600'
-            }`}
-          >
-            <LayoutDashboard className="w-5 h-5" />
-            <span>Dashboard</span>
-          </Link>
+          {/* Menu links Admin */}
+          {userRole === 'admin' && (
+            <>
+            <Link
+              href="/dashboard"
+              className={`flex items-center space-x-3 px-4 py-3 rounded-full ${
+                isActive('/dashboard')
+                  ? 'bg-white text-blue-700 font-bold'
+                  : 'hover:bg-blue-600'
+              }`}
+            >
+              <LayoutDashboard className="w-5 h-5" />
+              <span>Dashboard</span>
+            </Link>
 
-          <Link
-            href="/projects"
-            className={`flex items-center space-x-3 px-4 py-3 rounded-full ${
-              isActive('/projects')
-                ? 'bg-white text-blue-700 font-bold'
-                : 'hover:bg-blue-600'
-            }`}
-          >
-            <FileText className="w-5 h-5" />
-            <span>Data Pekerjaan</span>
-          </Link>
+            <Link
+              href="/projects"
+              className={`flex items-center space-x-3 px-4 py-3 rounded-full ${
+                isActive('/projects')
+                  ? 'bg-white text-blue-700 font-bold'
+                  : 'hover:bg-blue-600'
+              }`}
+            >
+              <FileText className="w-5 h-5" />
+              <span>Data Pekerjaan</span>
+            </Link>
 
-          <Link
-            href="/questionnaires"
-            className={`flex items-center space-x-3 px-4 py-3 rounded-full ${
-              isActive('/questionnaires')
-                ? 'bg-white text-blue-700 font-bold'
-                : 'hover:bg-blue-600'
-            }`}
-          >
-            <ClipboardList className="w-5 h-5" />
-            <span>Kuesioner</span>
-          </Link>
+            <Link
+              href="/questionnaires"
+              className={`flex items-center space-x-3 px-4 py-3 rounded-full ${
+                isActive('/questionnaires')
+                  ? 'bg-white text-blue-700 font-bold'
+                  : 'hover:bg-blue-600'
+              }`}
+            >
+              <ClipboardList className="w-5 h-5" />
+              <span>Kuesioner</span>
+            </Link>
 
-          <Link
-            href="/rating-links"
-            className={`flex items-center space-x-3 px-4 py-3 rounded-full ${
-              isActive('/rating-links')
-                ? 'bg-white text-blue-700 font-bold'
-                : 'hover:bg-blue-600'
-            }`}
-          >
-            <Link2 className="w-5 h-5" />
-            <span>Link Rating</span>
-          </Link>
+            <Link
+              href="/rating-links"
+              className={`flex items-center space-x-3 px-4 py-3 rounded-full ${
+                isActive('/rating-links')
+                  ? 'bg-white text-blue-700 font-bold'
+                  : 'hover:bg-blue-600'
+              }`}
+            >
+              <Link2 className="w-5 h-5" />
+              <span>Link Rating</span>
+            </Link>
+            </>
+          )}
+
+          {userRole === 'hod' && (
+            <>
+            <Link
+              href="/dashboard"
+              className={`flex items-center space-x-3 px-4 py-3 rounded-full ${
+                isActive('/dashboard')
+                  ? 'bg-white text-blue-700 font-bold'
+                  : 'hover:bg-blue-600'
+              }`}
+            >
+              <LayoutDashboard className="w-5 h-5" />
+              <span>Dashboard</span>
+            </Link>
+
+            <Link
+              href="/responses"
+              className={`flex items-center space-x-3 px-4 py-3 rounded-full ${
+                isActive('/responses')
+                  ? 'bg-white text-blue-700 font-bold'
+                  : 'hover:bg-blue-600'
+              }`}
+            >
+              <BarChart2 className="w-5 h-5" />
+              <span>Jawaban</span>
+            </Link>
+            </>
+          )}
 
           {/* Tombol Logout */}
           <button
