@@ -2,7 +2,6 @@
 
 use App\Http\Controllers\AdminProjectController;
 use App\Http\Controllers\DashboardController;
-use App\Http\Controllers\SharedProjectController;
 use App\Http\Controllers\AdminQuestionnaireController;
 use App\Http\Controllers\AdminRatingLinkController;
 use App\Http\Controllers\HODResponseController;
@@ -31,6 +30,8 @@ Route::middleware(['auth', 'verified', 'role:hod'])->prefix('hod')->name('hod.')
     Route::resource('projects', HODProjectController::class)->names('projects');
     Route::resource('responses', HODResponseController::class)->names('responses');
 });
+
+Route::get('/hod/responses/{id}/download', [HODResponseController::class, 'download'])->name('hod.responses.download');
 
 Route::get('/rating/{token}', [RatingFormController::class, 'show'])->name('rating.form');
 Route::post('/rating/{token}', [RatingFormController::class, 'store'])->name('rating.form');

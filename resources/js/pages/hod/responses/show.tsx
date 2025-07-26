@@ -1,9 +1,10 @@
 import { Head } from '@inertiajs/react';
 import AppLayout from '@/layouts/app-layout';
 import { type BreadcrumbItem } from '@/types';
-import type { ResponseDetail, Response } from '@/types';
+import type { Response } from '@/types';
 import { Label } from '@/components/ui/label';
 import { Card, CardContent } from '@/components/ui/card';
+import { Download } from 'lucide-react';
 
 interface ShowResponseProps {
     response: Response;
@@ -19,7 +20,17 @@ export default function ShowResponse({ response }: ShowResponseProps) {
         <AppLayout breadcrumbs={breadcrumbs}>
             <Head title={`Jawaban #${response.id}`} />
 
-            <h1 className="text-2xl font-bold my-3 mx-3">Detail Jawaban</h1>
+            <div className="flex flex-col sm:flex-row items-start sm:items-center gap-2 sm:gap-4 w-full md:w-auto">
+                <h1 className="text-2xl font-bold my-3 mx-3">Detail Jawaban</h1>
+                <a
+                    href={`/hod/responses/${response.id}/download`}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="text-blue-600 hover:underline"
+                    >
+                    <Download className="w-5 h-5" />
+                </a>
+            </div>
 
             <div className="space-y-6 mx-3">
                 <Card>
@@ -27,6 +38,7 @@ export default function ShowResponse({ response }: ShowResponseProps) {
                         <h2 className="text-xl font-semibold">Informasi Reviewer</h2>
                         <p><strong>Nama Pengisi:</strong> {response.rating_link?.send_to_name}</p>
                         <p><strong>Email:</strong> {response.rating_link?.send_to_email}</p>
+                        <p><strong>Kontak:</strong> {response.rating_link?.send_to_phone}</p>
                         <p><strong>Tanggal Submit:</strong> {new Date(response.submitted_at).toLocaleString()}</p>
                         <p><strong>Rata-rata Nilai:</strong> {response.average_rating ?? '-'}</p>
                     </CardContent>
