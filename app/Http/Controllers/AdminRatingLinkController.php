@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Mail\SendRatingLink;
 use App\Models\RatingLink;
 use App\Models\Project;
 use App\Models\Questionnaire;
@@ -10,6 +11,7 @@ use Illuminate\Support\Str;
 use Inertia\Inertia;
 use Inertia\Response;
 use Illuminate\Http\RedirectResponse;
+use Illuminate\Support\Facades\Mail;
 
 class AdminRatingLinkController extends Controller
 {
@@ -47,7 +49,7 @@ class AdminRatingLinkController extends Controller
             'questionnaire_id' => 'required|exists:questionnaires,id',
         ]);
 
-        RatingLink::create([
+        $ratingLink = RatingLink::create([
             'token' => Str::uuid(),
             'send_to_name' => $request->send_to_name,
             'send_to_email' => $request->send_to_email,
@@ -55,6 +57,10 @@ class AdminRatingLinkController extends Controller
             'project_id' => $request->project_id,
             'questionnaire_id' => $request->questionnaire_id,
         ]);
+
+        if ($ratingLink->send_to_email) {
+            Mail::to($ratingLink->send_to_email)->send(new SendRatingLink($ratingLink));
+        }
 
         return redirect()->route('admin.rating-links.index')->with('success', 'Link Rating berhasil ditambahkan.');
     }
@@ -88,6 +94,8 @@ class AdminRatingLinkController extends Controller
             'questionnaire_id' => 'required|exists:questionnaires,id',
         ]);
 
+        $oldEmail = $ratingLink->send_to_email;
+
         $ratingLink->update([
             'send_to_name' => $request->send_to_name,
             'send_to_email' => $request->send_to_email,
@@ -95,6 +103,11 @@ class AdminRatingLinkController extends Controller
             'project_id' => $request->project_id,
             'questionnaire_id' => $request->questionnaire_id,
         ]);
+
+        if ($request->send_to_email && $oldEmail !== $request->send_to_email) {
+            Mail::to($request->send_to_email)->send(new SendRatingLink($ratingLink));
+        }
+
 
         return redirect()->route('admin.rating-links.index')->with('success', 'Link Rating berhasil diperbarui.');
     }
@@ -105,5 +118,18 @@ class AdminRatingLinkController extends Controller
         $ratingLink->delete();
         
         return redirect()->route('admin.rating-links.index')->with('success', 'Link Rating berhasil dihapus.');
+    }
+
+    public function resend($id): RedirectResponse
+    {
+        $ratingLink = RatingLink::findOrFail($id);
+
+        if (!$ratingLink->send_to_email) {
+            return redirect()->back()->withErrors(['error' => 'Email tidak tersedia untuk link ini.']);
+        }
+
+        Mail::to($ratingLink->send_to_email)->send(new SendRatingLink($ratingLink));
+
+        return redirect()->route('admin.rating-links.index')->with('success', 'Email berhasil dikirim ulang.');
     }
 }

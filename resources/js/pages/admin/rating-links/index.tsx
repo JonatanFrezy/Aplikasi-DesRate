@@ -1,7 +1,7 @@
 import { Head, Link, usePage } from '@inertiajs/react';
 import AppLayout from '@/layouts/app-layout';
 import { type BreadcrumbItem } from '@/types';
-import { Copy, Delete, Edit } from 'lucide-react';
+import { Copy, Delete, Edit, Mail } from 'lucide-react';
 
 type RatingLink = {
     id: number;
@@ -100,6 +100,19 @@ export default function RatingLinks() {
                     <td className="border px-4 py-2">{rating_link.is_used ? 'Sudah Terjawab' : 'Belum Terjawab'}</td>
                     <td className="border px-4 py-2">
                         <div className="flex items-center space-x-2">
+                            <Link
+                                href={`/admin/rating-links/${rating_link.id}/resend`}
+                                method="post"
+                                as="button"
+                                className="text-blue-600 hover:underline text-sm"
+                                onClick={(e) => {
+                                    if (!confirm(`Kirim ulang email ke ${rating_link.send_to_email || 'alamat yang tersedia'}?`)) {
+                                    e.preventDefault();
+                                    }
+                                }}
+                                >
+                                <Mail className="w-4 h-4" />
+                            </Link>
                             <Link
                             href={`/admin/rating-links/${rating_link.id}/edit`}
                             className="text-yellow-600 hover:underline text-sm"

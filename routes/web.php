@@ -25,6 +25,7 @@ Route::middleware(['auth', 'verified', 'role:admin'])->prefix('admin')->name('ad
     Route::resource('questionnaires', AdminQuestionnaireController::class)->names('questionnaires');
     Route::resource('rating-links', AdminRatingLinkController::class)->names('rating-links');
 });
+Route::post('/admin/rating-links/{id}/resend', [AdminRatingLinkController::class, 'resend'])->name('admin.rating-links.resend');
 
 Route::middleware(['auth', 'verified', 'role:hod'])->prefix('hod')->name('hod.')->group(function () {
     Route::resource('projects', HODProjectController::class)->names('projects');
