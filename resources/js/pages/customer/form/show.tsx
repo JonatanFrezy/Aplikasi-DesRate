@@ -39,43 +39,51 @@ export default function RatingForm({ rating_link }: CreateRatingFormProps) {
   };
 
   return (
-    <div className="flex flex-1 justify-center bg-[#f7f7fb] py-10">
-      <form onSubmit={submit} className="w-full max-w-3xl bg-white p-8 shadow rounded-2xl space-y-6">
-        {/* Informasi Project */}
-        <section>
-          <h2 className="text-2xl font-bold mb-2">Informasi Pekerjaan</h2>
-          <div className="text-sm space-y-1">
-            <p><strong>Judul:</strong> {project.title}</p>
-            <p><strong>Nama PM:</strong> {project.pm_name}</p>
-            <p><strong>Anggota Tim:</strong> {project.team_members}</p>
+    <div className="flex justify-center bg-[#f7f7fb] py-10 px-4 min-h-screen">
+      <form
+        onSubmit={submit}
+        className="w-full max-w-4xl bg-white p-10 rounded-2xl shadow-xl space-y-8"
+      >
+        {/* Informasi Pekerjaan */}
+        <div>
+          <h2 className="text-2xl font-semibold text-gray-800 mb-4">Informasi Pekerjaan</h2>
+          <div className="space-y-2">
+            <p className="text-gray-700">
+              <strong>Judul:</strong> {project.title}
+            </p>
+            <p className="text-gray-700">
+              <strong>Nama PM:</strong> {project.pm_name}
+            </p>
+            <p className="text-gray-700">
+              <strong>Anggota Tim:</strong> {project.team_members}
+            </p>
           </div>
-        </section>
+        </div>
 
         {/* Informasi Kuesioner */}
-        <section>
-          <h2 className="text-xl font-semibold">Kuesioner: {questionnaire.title}</h2>
+        <div>
+          <h2 className="text-xl font-semibold text-gray-800 mb-2">
+            Kuesioner: {questionnaire.title}
+          </h2>
           <p className="text-sm text-gray-600">{questionnaire.description}</p>
-        </section>
+        </div>
 
-        {/* Form Pertanyaan */}
-        <section className="space-y-6">
+        {/* Pertanyaan */}
+        <div className="space-y-6">
           {questionnaire.questions
             .sort((a, b) => a.order_number - b.order_number)
             .map((question, index) => (
-              <div className="border border-gray-200 rounded-2xl p-6 bg-white space-y-2 shadow-sm" key={question.id}>
-                <Label className="font-medium text-sm block mb-1">
+              <div key={question.id}>
+                <Label className="text-sm text-gray-700 font-medium">
                   {index + 1}. {question.text}
-                  {Boolean(question.is_required) && (
-                    <span className="text-red-600"> *</span>
-                  )}
+                  {Boolean(question.is_required) && <span className="text-red-600"> *</span>}
                 </Label>
 
                 {question.type === 'text' && (
                   <>
                     <Input
                       type="text"
-                      name={`question_${question.id}`}
-                      required={question.is_required}
+                      className="mt-2 rounded-xl border border-white shadow-sm focus:ring-2 focus:ring-blue-500"
                       value={data.response_details[index]?.answer_text ?? ''}
                       onChange={(e) => {
                         const newResponses = [...data.response_details];
@@ -86,13 +94,11 @@ export default function RatingForm({ rating_link }: CreateRatingFormProps) {
                         };
                         setData('response_details', newResponses);
                       }}
-                      className="rounded-xl"
+                      required={question.is_required}
                     />
                     <InputError
                       message={
-                        (errors as Record<string, string>)[
-                          `response_details.${index}.answer_text`
-                        ] ?? ''
+                        (errors as Record<string, string>)[`response_details.${index}.answer_text`] ?? ''
                       }
                     />
                   </>
@@ -100,19 +106,20 @@ export default function RatingForm({ rating_link }: CreateRatingFormProps) {
 
                 {question.type === 'radio' && (
                   <>
-                    <div className="space-y-1">
+                    <div className="mt-2 space-y-2">
                       {question.answer_options.map((option) => (
-                        <div key={option.id} className="flex items-center gap-2">
-                          <Input
-                            className="form-check-input"
+                        <div
+                          key={option.id}
+                          className="flex items-center justify-between px-4 py-2 border rounded-xl hover:bg-gray-50"
+                        >
+                          <span className="text-sm text-gray-800">{option.label}</span>
+                          <input
                             type="radio"
                             name={`question_${question.id}`}
                             id={`option_${option.id}`}
                             value={option.id}
                             required={question.is_required}
-                            checked={
-                              data.response_details[index]?.selected_option_id === option.id
-                            }
+                            checked={data.response_details[index]?.selected_option_id === option.id}
                             onChange={() => {
                               const newResponses = [...data.response_details];
                               newResponses[index] = {
@@ -122,10 +129,8 @@ export default function RatingForm({ rating_link }: CreateRatingFormProps) {
                               };
                               setData('response_details', newResponses);
                             }}
+                            className="w-4 h-4 text-blue-600 border-gray-300 focus:ring-blue-500"
                           />
-                          <Label className="text-sm" htmlFor={`option_${option.id}`}>
-                            {option.label}
-                          </Label>
                         </div>
                       ))}
                     </div>
@@ -140,16 +145,16 @@ export default function RatingForm({ rating_link }: CreateRatingFormProps) {
                 )}
               </div>
             ))}
-        </section>
+        </div>
 
-        {/* Tombol Kirim */}
-        <div className="flex justify-end pt-6">
+        {/* Submit */}
+        <div className="flex justify-end">
           <Button
             type="submit"
             disabled={processing}
             className="bg-blue-600 hover:bg-blue-700 text-white px-6 py-2 rounded-full shadow-md"
           >
-            {processing && <LoaderCircle className="h-4 w-4 animate-spin mr-2" />}
+            {processing && <LoaderCircle className="w-4 h-4 animate-spin mr-2" />}
             Kirim Jawaban
           </Button>
         </div>
