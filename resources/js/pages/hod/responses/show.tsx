@@ -1,164 +1,159 @@
-import { Head } from '@inertiajs/react';
-import AppLayout from '@/layouts/app-layout';
-import { type BreadcrumbItem } from '@/types';
-import type { Response } from '@/types';
+import { useForm } from '@inertiajs/react';
+import type { RatingLink } from '@/types';
+import { FormEventHandler } from 'react';
 import { Label } from '@/components/ui/label';
-import { Download } from 'lucide-react';
+import { Input } from '@/components/ui/input';
+import { Button } from '@/components/ui/button';
+import { LoaderCircle } from 'lucide-react';
+import InputError from '@/components/input-error';
 
-interface ShowResponseProps {
-  response: Response;
+interface CreateRatingFormProps {
+  rating_link: RatingLink;
 }
 
-export default function ShowResponse({ response }: ShowResponseProps) {
-  const breadcrumbs: BreadcrumbItem[] = [
-    { title: 'Jawaban', href: '/hod/responses' },
-    { title: `Detail: ${response.id}`, href: `/hod/responses/${response.id}` },
-  ];
+export default function RatingForm({ rating_link }: CreateRatingFormProps) {
+  const { project, questionnaire } = rating_link;
+
+  const { data, setData, post, processing, errors } = useForm<{
+    response_details: {
+      answer_text: string | null;
+      selected_option_id: number | null;
+      question_id: number;
+    }[];
+  }>({
+    response_details:
+      questionnaire?.questions.map((q) => ({
+        answer_text: null,
+        selected_option_id: null,
+        question_id: q.id,
+      })) ?? [],
+  });
+
+  if (!project || !questionnaire) {
+    return <div className="container my-4">Memuat data...</div>;
+  }
+
+  const submit: FormEventHandler = (e) => {
+    e.preventDefault();
+    post(`/rating/${rating_link.token}`);
+  };
 
   return (
-    <AppLayout breadcrumbs={breadcrumbs}>
-      <Head title={`Jawaban #${response.id}`} />
-
-      <div className="flex justify-center bg-[#f7f7fb] py-12 px-4 min-h-screen">
-        <div className="w-full max-w-4xl bg-white p-10 rounded-2xl shadow-xl space-y-10">
-          <div className="flex items-center justify-between">
-            <h1 className="text-2xl font-semibold text-gray-800">Detail Jawaban</h1>
-            <a
-              href={`/hod/responses/${response.id}/download`}
-              target="_blank"
-              rel="noopener noreferrer"
-              className="text-blue-600 hover:text-blue-800"
-            >
-              <Download className="w-5 h-5" />
-            </a>
+    <div className="flex flex-1 justify-center bg-[#f7f7fb] py-10">
+      <form onSubmit={submit} className="w-full max-w-3xl bg-white p-8 shadow rounded-2xl space-y-6">
+        {/* Informasi Project */}
+        <section>
+          <h2 className="text-2xl font-bold mb-2">Informasi Pekerjaan</h2>
+          <div className="text-sm space-y-1">
+            <p><strong>Judul:</strong> {project.title}</p>
+            <p><strong>Nama PM:</strong> {project.pm_name}</p>
+            <p><strong>Anggota Tim:</strong> {project.team_members}</p>
           </div>
+        </section>
 
-          {/* Reviewer */}
-          <div className="space-y-6">
-            <h2 className="text-xl font-semibold text-gray-800">Informasi Reviewer</h2>
+        {/* Informasi Kuesioner */}
+        <section>
+          <h2 className="text-xl font-semibold">Kuesioner: {questionnaire.title}</h2>
+          <p className="text-sm text-gray-600">{questionnaire.description}</p>
+        </section>
 
-            <div className="grid md:grid-cols-2 gap-6">
-              <div>
-                <Label className="text-sm text-gray-700 font-medium">Nama Pengisi</Label>
-                <p className="mt-2 rounded-xl border border-white shadow-sm px-4 py-2 bg-gray-50 text-gray-900">
-                  {response.rating_link?.send_to_name}
-                </p>
-              </div>
-              <div>
-                <Label className="text-sm text-gray-700 font-medium">Email</Label>
-                <p className="mt-2 rounded-xl border border-white shadow-sm px-4 py-2 bg-gray-50 text-gray-900">
-                  {response.rating_link?.send_to_email}
-                </p>
-              </div>
-              <div>
-                <Label className="text-sm text-gray-700 font-medium">Kontak</Label>
-                <p className="mt-2 rounded-xl border border-white shadow-sm px-4 py-2 bg-gray-50 text-gray-900">
-                  {response.rating_link?.send_to_phone}
-                </p>
-              </div>
-              <div>
-                <Label className="text-sm text-gray-700 font-medium">Tanggal Submit</Label>
-                <p className="mt-2 rounded-xl border border-white shadow-sm px-4 py-2 bg-gray-50 text-gray-900">
-                  {new Date(response.submitted_at).toLocaleString()}
-                </p>
-              </div>
-              <div>
-                <Label className="text-sm text-gray-700 font-medium">Rata-rata Nilai</Label>
-                <p className="mt-2 rounded-xl border border-white shadow-sm px-4 py-2 bg-gray-50 text-gray-900">
-                  {response.average_rating ?? '-'}
-                </p>
-              </div>
-            </div>
-          </div>
+        {/* Form Pertanyaan */}
+        <section className="space-y-6">
+          {questionnaire.questions
+            .sort((a, b) => a.order_number - b.order_number)
+            .map((question, index) => (
+              <div className="border border-gray-200 rounded-2xl p-6 bg-white space-y-2 shadow-sm" key={question.id}>
+                <Label className="font-medium text-sm block mb-1">
+                  {index + 1}. {question.text}
+                  {Boolean(question.is_required) && (
+                    <span className="text-red-600"> *</span>
+                  )}
+                </Label>
 
-          {/* Pekerjaan */}
-          <div className="space-y-4">
-            <h2 className="text-xl font-semibold text-gray-800">Informasi Pekerjaan</h2>
-            <div className="grid md:grid-cols-2 gap-6">
-              <div>
-                <Label className="text-sm text-gray-700 font-medium">Pekerjaan</Label>
-                <p className="mt-2 rounded-xl border border-white shadow-sm px-4 py-2 bg-gray-50 text-gray-900">
-                  {response.project?.title}
-                </p>
+                {question.type === 'text' && (
+                  <>
+                    <Input
+                      type="text"
+                      name={`question_${question.id}`}
+                      required={question.is_required}
+                      value={data.response_details[index]?.answer_text ?? ''}
+                      onChange={(e) => {
+                        const newResponses = [...data.response_details];
+                        newResponses[index] = {
+                          ...newResponses[index],
+                          answer_text: e.target.value,
+                          selected_option_id: null,
+                        };
+                        setData('response_details', newResponses);
+                      }}
+                      className="rounded-xl"
+                    />
+                    <InputError
+                      message={
+                        (errors as Record<string, string>)[
+                          `response_details.${index}.answer_text`
+                        ] ?? ''
+                      }
+                    />
+                  </>
+                )}
+
+                {question.type === 'radio' && (
+                  <>
+                    <div className="space-y-1">
+                      {question.answer_options.map((option) => (
+                        <div key={option.id} className="flex items-center gap-2">
+                          <Input
+                            className="form-check-input"
+                            type="radio"
+                            name={`question_${question.id}`}
+                            id={`option_${option.id}`}
+                            value={option.id}
+                            required={question.is_required}
+                            checked={
+                              data.response_details[index]?.selected_option_id === option.id
+                            }
+                            onChange={() => {
+                              const newResponses = [...data.response_details];
+                              newResponses[index] = {
+                                ...newResponses[index],
+                                selected_option_id: option.id,
+                                answer_text: null,
+                              };
+                              setData('response_details', newResponses);
+                            }}
+                          />
+                          <Label className="text-sm" htmlFor={`option_${option.id}`}>
+                            {option.label}
+                          </Label>
+                        </div>
+                      ))}
+                    </div>
+                    <InputError
+                      message={
+                        (errors as Record<string, string>)[
+                          `response_details.${index}.selected_option_id`
+                        ] ?? ''
+                      }
+                    />
+                  </>
+                )}
               </div>
-              <div>
-                <Label className="text-sm text-gray-700 font-medium">PM</Label>
-                <p className="mt-2 rounded-xl border border-white shadow-sm px-4 py-2 bg-gray-50 text-gray-900">
-                  {response.project?.pm_name}
-                </p>
-              </div>
-              <div className="md:col-span-2">
-                <Label className="text-sm text-gray-700 font-medium">Anggota Tim</Label>
-                <p className="mt-2 rounded-xl border border-white shadow-sm px-4 py-2 bg-gray-50 text-gray-900">
-                  {response.project?.team_members}
-                </p>
-              </div>
-            </div>
-          </div>
+            ))}
+        </section>
 
-          {/* Kuesioner */}
-          <div className="space-y-4">
-            <h2 className="text-xl font-semibold text-gray-800">Informasi Kuesioner</h2>
-
-            <div>
-              <Label className="text-sm text-gray-700 font-medium">Kuesioner</Label>
-              <p className="mt-2 rounded-xl border border-white shadow-sm px-4 py-2 bg-gray-50 text-gray-900">
-                {response.questionnaire?.title}
-              </p>
-            </div>
-            <div>
-              <Label className="text-sm text-gray-700 font-medium">Deskripsi</Label>
-              <p className="mt-2 rounded-xl border border-white shadow-sm px-4 py-2 bg-gray-50 text-gray-900">
-                {response.questionnaire?.description}
-              </p>
-            </div>
-
-            <div className="space-y-4">
-              <Label className="text-sm text-gray-700 font-medium">Pertanyaan</Label>
-              {[...response.response_details]
-                .sort((a, b) => (a.question?.order_number ?? 0) - (b.question?.order_number ?? 0))
-                .map((detail, index) => (
-                  <div key={detail.id} className="rounded-xl border border-white shadow-sm bg-gray-50 px-4 py-4 space-y-2">
-                    {detail.question ? (
-                      <>
-                        <Label className="font-medium text-gray-800">
-                          {index + 1}. {detail.question.text}
-                          {Boolean(detail.question.is_required) && <span className="text-red-600"> *</span>}
-                        </Label>
-
-                        {detail.answer_option ? (
-                          <div className="space-y-1">
-                            {detail.question.answer_options?.map((opt) => (
-                              <div
-                                key={opt.id}
-                                className={`flex items-center gap-2 ${
-                                  opt.id === detail.selected_option_id ? 'text-blue-600 font-semibold' : 'text-gray-700'
-                                }`}
-                              >
-                                <div
-                                  className={`w-4 h-4 rounded-full border ${
-                                    opt.id === detail.selected_option_id ? 'bg-blue-600' : 'bg-white'
-                                  }`}
-                                ></div>
-                                <span>{opt.label}</span>
-                              </div>
-                            ))}
-                          </div>
-                        ) : (
-                          <p className="text-gray-800 bg-white border rounded-md p-2">
-                            {detail.answer_text || '-'}
-                          </p>
-                        )}
-                      </>
-                    ) : (
-                      <p className="text-sm text-red-500">Pertanyaan tidak tersedia</p>
-                    )}
-                  </div>
-                ))}
-            </div>
-          </div>
+        {/* Tombol Kirim */}
+        <div className="flex justify-end pt-6">
+          <Button
+            type="submit"
+            disabled={processing}
+            className="bg-blue-600 hover:bg-blue-700 text-white px-6 py-2 rounded-full shadow-md"
+          >
+            {processing && <LoaderCircle className="h-4 w-4 animate-spin mr-2" />}
+            Kirim Jawaban
+          </Button>
         </div>
-      </div>
-    </AppLayout>
+      </form>
+    </div>
   );
 }
