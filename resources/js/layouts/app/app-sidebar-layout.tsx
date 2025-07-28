@@ -55,11 +55,12 @@ export default function AppSidebarLayout({
           />
         )}
 
-        <aside
-          className={`fixed top-0 left-0 z-40 h-full bg-blue-700 text-white transform transition-transform duration-300 ease-in-out
-          ${sidebarOpen ? 'translate-x-0' : '-translate-x-full'}
-          md:translate-x-0 md:static md:flex md:flex-col md:w-80 p-6 space-y-4`}
-        >
+      <aside
+  className={`fixed top-0 left-0 z-40 h-full bg-blue-700 text-white transform transition-transform duration-300 ease-in-out
+  ${sidebarOpen ? 'translate-x-0' : '-translate-x-full'}
+  md:translate-x-0 md:static md:flex md:flex-col md:w-64 p-4 space-y-3`}
+>
+
           {/* Close button mobile */}
           <div className="flex justify-between items-center md:hidden mb-4">
             <h2 className="text-lg font-semibold">Menu</h2>

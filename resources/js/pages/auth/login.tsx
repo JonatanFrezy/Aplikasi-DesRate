@@ -108,3 +108,4 @@ export default function Login({ status, canResetPassword }: LoginProps) {
         </AuthLayout>
     );
 }
+

@@ -1,151 +1,171 @@
 import { Head, Link, usePage } from '@inertiajs/react';
 import AppLayout from '@/layouts/app-layout';
-import { type BreadcrumbItem } from '@/types';
-import { Copy, Delete, Edit, Mail } from 'lucide-react';
+import { Copy, Delete, Edit, Mail, ArrowLeft } from 'lucide-react';
 
 type RatingLink = {
-    id: number;
-    token: string;
-    link?: string; 
-    send_to_name: string;
-    send_to_email: string;
-    send_to_phone: string;
-    is_used: boolean;
-    project?: {
-        title: string;
-    };
-    questionnaire?: {
-        title: string;
-    };
+  id: number;
+  token: string;
+  link?: string;
+  send_to_name: string;
+  send_to_email: string;
+  send_to_phone: string;
+  is_used: boolean;
+  project?: {
+    title: string;
+  };
+  questionnaire?: {
+    title: string;
+  };
 };
 
 type PageProps = {
-    rating_links: RatingLink[];
-    flash?: {
-        link?: RatingLink;
-    };
+  rating_links: RatingLink[];
 };
 
-const breadcrumbs: BreadcrumbItem[] = [
-    {
-        title: 'Link Rating',
-        href: '/admin/rating-links',
-    },
-];
-
 export default function RatingLinks() {
-    const { rating_links } = usePage<PageProps>().props;
+  const { rating_links } = usePage<PageProps>().props;
 
-    return (
-        <AppLayout breadcrumbs={breadcrumbs}>
-        <Head title="Link Rating" />
+  return (
+    <AppLayout>
+      <Head title="Link Rating" />
 
-        <div className="flex justify-between items-center my-3 mx-3">
-            <h1 className="text-2xl font-bold">Daftar Link Rating</h1>
-            <Link
-            href="/admin/rating-links/create"
-            className="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-md text-sm"
-            >
-            Tambah Link Rating
-            </Link>
+      {/* Header */}
+      <div className="bg-white shadow-sm border-b">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="flex flex-col md:flex-row md:justify-between md:items-center py-4 gap-4">
+            <h1 className="text-2xl font-bold text-blue-700">DESRATE</h1>
+
+            <div className="flex flex-col sm:flex-row items-start sm:items-center gap-2 sm:gap-4 w-full md:w-auto">
+              <Link
+                href="/admin/rating-links/create"
+                className="text-blue-600 hover:underline flex items-center gap-1"
+              >
+                <Edit className="w-5 h-5" /> 
+              </Link>
+
+              <div className="bg-blue-600 text-white px-4 py-2 rounded-full font-semibold text-sm text-center w-full sm:w-auto">
+                Admin
+              </div>
+            </div>
+          </div>
         </div>
+      </div>
+      {/* Content */}
+      <div className="flex min-h-screen">
+        {/* Content */}
+        <main className="flex-1 bg-gray-50 p-4 sm:p-6">
+          <div className="bg-white shadow-md rounded-xl p-6">
+            <div className="flex justify-between items-center mb-4">
+              <h2 className="text-xl font-semibold text-gray-800">Data Link Rating</h2>
+            </div>
 
-        <div className="overflow-x-auto mx-3">
-            <table className="w-full table-auto border-collapse border border-gray-200">
-            <thead className="bg-gray-100">
-                <tr>
-                <th className="border px-4 py-2 text-left">#</th>
-                <th className="border px-4 py-2 text-left">Link</th>
-                <th className="border px-4 py-2 text-left">Pekerjaan</th>
-                <th className="border px-4 py-2 text-left">Kuesioner</th>
-                <th className="border px-4 py-2 text-left">Nama Penerima</th>
-                <th className="border px-4 py-2 text-left">Email</th>
-                <th className="border px-4 py-2 text-left">Kontak</th>
-                <th className="border px-4 py-2 text-left">Status</th>
-                <th className="border px-4 py-2 text-left">Aksi</th>
-                </tr>
-            </thead>
-            <tbody>
-                {rating_links.length > 0 ? (
-                rating_links.map((rating_link, index) => (
-                    <tr key={rating_link.id}>
-                    <td className="border px-4 py-2">{index + 1}</td>
-                    <td className="border px-4 py-2">
-                        <div className="flex items-center gap-2">
-                        {rating_link.link}
+            <div className="overflow-x-auto">
+              <table className="w-full text-sm text-left text-gray-700 border">
+                <thead className="bg-gray-100 text-blue-700 font-semibold">
+                  <tr>
+                    <th className="px-4 py-3 border">#</th>
+                    <th className="px-4 py-3 border">Link</th>
+                    <th className="px-4 py-3 border">Pekerjaan</th>
+                    <th className="px-4 py-3 border">Kuesioner</th>
+                    <th className="px-4 py-3 border">Nama Penerima</th>
+                    <th className="px-4 py-3 border">Email</th>
+                    <th className="px-4 py-3 border">Kontak</th>
+                    <th className="px-4 py-3 border">Status</th>
+                    <th className="px-4 py-3 border">Aksi</th>
+                  </tr>
+                </thead>
+                <tbody className="divide-y">
+                  {rating_links.length > 0 ? (
+                    rating_links.map((link, index) => (
+                      <tr key={link.id} className="hover:bg-gray-50">
+                        <td className="px-4 py-3 border">{index + 1}</td>
+                        <td className="px-4 py-3 border">
+                          <div className="flex items-center gap-2 text-blue-600">
+                            <span className="truncate max-w-[140px]">{link.link ?? '-'}</span>
                             <button
-                                onClick={() => {
-                                    if (rating_link.link) {
-                                        navigator.clipboard.writeText(rating_link.link);
-                                        alert('Link berhasil disalin!');
-                                    } else {
-                                        alert('Link tidak tersedia!');
-                                    }
-                                }}
-                                className="text-blue-600 hover:underline"
-                                >
-                                <Copy className="w-4 h-4" />
-                            </button>
-                        </div>
-                    </td>
-                    <td className="border px-4 py-2">
-                        {rating_link.project?.title ?? '-'}
-                    </td>
-                    <td className="border px-4 py-2">
-                        {rating_link.questionnaire?.title ?? '-'}
-                    </td>
-                    <td className="border px-4 py-2">{rating_link.send_to_name}</td>
-                    <td className="border px-4 py-2">{rating_link.send_to_email}</td>
-                    <td className="border px-4 py-2">{rating_link.send_to_phone}</td>
-                    <td className="border px-4 py-2">{rating_link.is_used ? 'Sudah Terjawab' : 'Belum Terjawab'}</td>
-                    <td className="border px-4 py-2">
-                        <div className="flex items-center space-x-2">
-                            <Link
-                                href={`/admin/rating-links/${rating_link.id}/resend`}
-                                method="post"
-                                as="button"
-                                className="text-blue-600 hover:underline text-sm"
-                                onClick={(e) => {
-                                    if (!confirm(`Kirim ulang email ke ${rating_link.send_to_email || 'alamat yang tersedia'}?`)) {
-                                    e.preventDefault();
-                                    }
-                                }}
-                                >
-                                <Mail className="w-4 h-4" />
-                            </Link>
-                            <Link
-                            href={`/admin/rating-links/${rating_link.id}/edit`}
-                            className="text-yellow-600 hover:underline text-sm"
-                            >
-                            <Edit className="w-4 h-4" />
-                            </Link>
-                            <Link
-                            href={`/admin/rating-links/${rating_link.id}`}
-                            method="delete"
-                            as="button"
-                            className="text-red-600 hover:underline text-sm"
-                            onClick={(e) => {
-                                if (!confirm('Yakin ingin menghapus project ini?')) {
-                                e.preventDefault();
+                              onClick={() => {
+                                if (link.link) {
+                                  navigator.clipboard.writeText(link.link);
+                                  alert('Link berhasil disalin!');
+                                } else {
+                                  alert('Link tidak tersedia!');
                                 }
-                            }}
+                              }}
+                              className="hover:text-blue-800"
                             >
-                            <Delete className="w-4 h-4" />
-                            </Link>
-                        </div>
+                              <Copy className="w-4 h-4" />
+                            </button>
+                          </div>
                         </td>
+                        <td className="px-4 py-3 border">{link.project?.title ?? '-'}</td>
+                        <td className="px-4 py-3 border">{link.questionnaire?.title ?? '-'}</td>
+                        <td className="px-4 py-3 border">{link.send_to_name}</td>
+                        <td className="px-4 py-3 border">{link.send_to_email}</td>
+                        <td className="px-4 py-3 border">{link.send_to_phone}</td>
+                        <td className="px-4 py-3 border">
+                          {link.is_used ? 'Sudah Terjawab' : 'Belum Terjawab'}
+                        </td>
+<td className="px-4 py-3 border">
+  <div className="flex items-center gap-2 flex-wrap">
+    {/* Tombol Kirim */}
+    <Link
+      href={`/admin/rating-links/${link.id}/resend`}
+      method="post"
+      as="button"
+      className="text-xs bg-blue-600 hover:bg-blue-700 text-white px-3 py-1 rounded-md"
+      onClick={(e) => {
+        if (
+          !confirm(`Kirim ulang email ke ${link.send_to_email || 'alamat yang tersedia'}?`)
+        ) {
+          e.preventDefault();
+        }
+      }}
+    >
+      Kirim
+    </Link>
+
+    {/* Tombol Edit */}
+    <Link
+      href={`/admin/rating-links/${link.id}/edit`}
+      className="text-xs bg-yellow-400 hover:bg-yellow-500 text-white px-3 py-1 rounded-md"
+    >
+      Edit
+    </Link>
+
+    {/* Tombol Hapus */}
+    <Link
+      href={`/admin/rating-links/${link.id}`}
+      method="delete"
+      as="button"
+      className="text-xs bg-red-600 hover:bg-red-700 text-white px-3 py-1 rounded-md"
+      onClick={(e) => {
+        if (!confirm('Yakin ingin menghapus link ini?')) {
+          e.preventDefault();
+        }
+      }}
+    >
+      Hapus
+    </Link>
+  </div>
+</td>
+
+
+                      </tr>
+                    ))
+                  ) : (
+                    <tr>
+                      <td colSpan={9} className="text-center text-gray-500 py-8">
+                        Tidak ada data link rating.
+                      </td>
                     </tr>
-                ))
-                ) : (
-                <tr>
-                    <td colSpan={9} className="text-center px-4 py-6">
-                    Tidak ada data link rating.
-                    </td>
-                </tr>
-                )}
-            </tbody>
-            </table>
-        </div>
-        </AppLayout>
-    );
+                  )}
+                </tbody>
+              </table>
+            </div>
+</div>
+      </main>
+      </div>
+    </AppLayout>
+  );
+
 }

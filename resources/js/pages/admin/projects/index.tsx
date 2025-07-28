@@ -35,21 +35,18 @@ export default function Projects() {
             <h1 className="text-2xl font-bold text-blue-700">DESRATE</h1>
 
             <div className="flex flex-col sm:flex-row items-start sm:items-center gap-2 sm:gap-4 w-full md:w-auto">
-              <input
-                type="text"
-                placeholder="Search..."
-                className="w-full sm:w-72 px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
-              />
-
-              <Link href="/admin/projects/create" className="text-blue-600 hover:underline">
-                <Edit className="w-5 h-5" />
+              <Link
+                href="/admin/projects/create"
+                className="text-blue-600 hover:underline flex items-center gap-1"
+              >
+                <Edit className="w-5 h-5" /> 
               </Link>
 
               <div className="bg-blue-600 text-white px-4 py-2 rounded-full font-semibold text-sm text-center w-full sm:w-auto">
                 Admin
               </div>
             </div>
-          </div>
+            </div>
         </div>
       </div>
 
@@ -57,12 +54,14 @@ export default function Projects() {
       <div className="flex min-h-screen">
         {/* Content */}
         <main className="flex-1 bg-gray-50 p-4 sm:p-6">
-          <h2 className="text-xl font-semibold text-gray-900 mb-4">Data Pekerjaan</h2>
+          <div className="bg-white shadow-md rounded-xl p-6">
+            <div className="flex justify-between items-center mb-4">
+              <h2 className="text-xl font-semibold text-gray-800">Data Pekerjaan</h2>
+            </div>
 
-          <div className="bg-white rounded-xl shadow-md overflow-hidden">
             <div className="overflow-x-auto">
-              <table className="min-w-full text-sm text-left whitespace-nowrap">
-                <thead className="bg-gray-50 border-b text-blue-700 font-semibold">
+              <table className="w-full text-sm text-left text-gray-700 border">
+                <thead className="bg-gray-100 text-blue-700 font-semibold">
                   <tr>
                     <th className="px-4 py-3">Pekerjaan</th>
                     <th className="px-4 py-3">PM</th>
@@ -102,25 +101,6 @@ export default function Projects() {
                   )}
                 </tbody>
               </table>
-            </div>
-
-            {/* Pagination */}
-            <div className="px-4 sm:px-6 py-4 bg-gray-50 border-t text-sm flex flex-col sm:flex-row justify-between items-center gap-3">
-              <span className="text-gray-600">Showing data 1 to 7 of 40 entries</span>
-              <div className="flex gap-1">
-                <button className="px-2 py-1 text-gray-400">{'<'}</button>
-                {[1, 2, 3, 4, 6].map((n) => (
-                  <button
-                    key={n}
-                    className={`px-3 py-1 rounded ${
-                      n === 1 ? 'bg-blue-600 text-white' : 'text-gray-700 hover:text-blue-600'
-                    }`}
-                  >
-                    {n}
-                  </button>
-                ))}
-                <button className="px-2 py-1 text-gray-400">{'>'}</button>
-              </div>
             </div>
           </div>
         </main>

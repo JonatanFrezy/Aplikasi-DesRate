@@ -22,239 +22,213 @@ const breadcrumbs: BreadcrumbItem[] = [
 ];
 
 export default function CreateQuestionnaire() {
-    const { data, setData, processing, errors } = useForm({
-        title: '',
-        description: '',
-        questions: [
-        {
-            text: '',
-            type: 'text',
-            order_number: 1,
-            is_required: false,
-            answer_options: [{ value: 1, label: '' }], 
-        },
-        ],
-    });
+  const { data, setData, processing, errors } = useForm({
+    title: '',
+    description: '',
+    questions: [
+      {
+        text: '',
+        type: 'text',
+        order_number: 1,
+        is_required: false,
+        answer_options: [{ value: 1, label: '' }],
+      },
+    ],
+  });
 
-    const addQuestion = (afterIndex: number) => {
-        const updated = [...data.questions];
-
-        // Insert question after current index
-        updated.splice(afterIndex + 1, 0, {
-            text: '',
-            type: 'text',
-            order_number: 0, // akan diisi ulang nanti
-            is_required: false,
-            answer_options: [{ value: 1, label: '' }],
-        });
-
-        // Reorder semua order_number
-        const reordered = updated.map((q, idx) => ({
-            ...q,
-            order_number: idx + 1,
-        }));
-
-        setData('questions', reordered);
-    };
-
-    const removeQuestion = (index: number) => {
-        const updated = [...data.questions];
-        updated.splice(index, 1);
-        setData('questions', updated);
-    };
-
-    const updateQuestion = <K extends keyof Question>(
-    index: number,
-    key: K,
-    value: Question[K]
-    ) => {
+  const addQuestion = (afterIndex: number) => {
     const updated = [...data.questions];
-    updated[index] = {
-        ...updated[index],
-        [key]: value,
-    };
+    updated.splice(afterIndex + 1, 0, {
+      text: '',
+      type: 'text',
+      order_number: 0,
+      is_required: false,
+      answer_options: [{ value: 1, label: '' }],
+    });
+    const reordered = updated.map((q, idx) => ({ ...q, order_number: idx + 1 }));
+    setData('questions', reordered);
+  };
 
-        // Reset options if type changed to 'text'
-        if (key === 'type' && value === 'text') {
-            updated[index].answer_options = [{ value: 1, label: '' }];
-        }
+  const removeQuestion = (index: number) => {
+    const updated = [...data.questions];
+    updated.splice(index, 1);
+    setData('questions', updated);
+  };
 
-        setData('questions', updated);
-    };
+  const updateQuestion = <K extends keyof Question>(index: number, key: K, value: Question[K]) => {
+    const updated = [...data.questions];
+    updated[index] = { ...updated[index], [key]: value };
+    if (key === 'type' && value === 'text') {
+      updated[index].answer_options = [{ value: 1, label: '' }];
+    }
+    setData('questions', updated);
+  };
 
-    const addOption = (qIndex: number) => {
-        const updated = [...data.questions];
-        updated[qIndex].answer_options.push({ value: updated[qIndex].answer_options.length + 1, label: '' });
-        setData('questions', updated);
-    };
+  const addOption = (qIndex: number) => {
+    const updated = [...data.questions];
+    updated[qIndex].answer_options.push({ value: updated[qIndex].answer_options.length + 1, label: '' });
+    setData('questions', updated);
+  };
 
-    const updateOption = (qIndex: number, oIndex: number, value: string) => {
-        const updated = [...data.questions];
-        updated[qIndex].answer_options[oIndex].label = value;
-        setData('questions', updated);
-    };
+  const updateOption = (qIndex: number, oIndex: number, value: string) => {
+    const updated = [...data.questions];
+    updated[qIndex].answer_options[oIndex].label = value;
+    setData('questions', updated);
+  };
 
-    const removeOption = (qIndex: number, oIndex: number) => {
-        const updated = [...data.questions];
-        updated[qIndex].answer_options.splice(oIndex, 1);
-        setData('questions', updated);
-    };
+  const removeOption = (qIndex: number, oIndex: number) => {
+    const updated = [...data.questions];
+    updated[qIndex].answer_options.splice(oIndex, 1);
+    setData('questions', updated);
+  };
 
-    const submit: FormEventHandler = (e) => {
-        e.preventDefault();
+  const submit: FormEventHandler = (e) => {
+    e.preventDefault();
+    const cleanedQuestions = data.questions.map((q) => ({
+      ...q,
+      answer_options: q.type === 'radio' ? q.answer_options : [],
+    }));
+    const formData = { ...data, questions: cleanedQuestions };
+    router.post('/admin/questionnaires', formData);
+  };
 
-        const cleanedQuestions = data.questions.map((q) => ({
-            ...q,
-            answer_options: q.type === 'radio' ? q.answer_options : [],
-        }));
+  return (
+    <AppLayout breadcrumbs={breadcrumbs}>
+      <Head title="Tambah Kuesioner" />
+      <div className="flex flex-1 justify-center bg-[#f7f7fb] py-10">
+        <form onSubmit={submit} className="w-full max-w-4xl bg-white p-8 shadow rounded-2xl space-y-6">
+          <div>
+            <Label className="font-semibold text-base mb-1 block">Judul Kuesioner</Label>
+            <Input
+              placeholder="Input Judul"
+              value={data.title}
+              onChange={(e) => setData('title', e.target.value)}
+              className="rounded-xl"
+            />
+            <InputError message={errors.title} />
+          </div>
 
-        const formData = {
-            ...data,
-            questions: cleanedQuestions,
-        };
+          <div>
+            <Label className="font-semibold text-base mb-1 block">Deskripsi</Label>
+            <textarea
+              placeholder="Deskripsi Kuesioner"
+              value={data.description}
+              onChange={(e) => setData('description', e.target.value)}
+              className="rounded-xl border w-full p-3 text-sm min-h-[100px]"
+            />
+            <InputError message={errors.description} />
+          </div>
 
-        router.post('/admin/questionnaires', formData);
-    };
+          {data.questions.map((q, index) => (
+            <div key={index} className="border border-gray-200 rounded-2xl p-6 bg-white space-y-4 relative shadow-sm">
+              <button type="button" onClick={() => removeQuestion(index)} className="absolute top-3 right-3 text-red-600 hover:text-red-800">
+                <Trash size={18} />
+              </button>
 
-    return (
-        <AppLayout breadcrumbs={breadcrumbs}>
-            <Head title="Tambah Kuesioner" />
+              <div>
+                <Label className="font-semibold text-sm mb-1 block">Pertanyaan</Label>
+                <Input
+                  placeholder="Tuliskan pertanyaan"
+                  value={q.text}
+                  onChange={(e) => updateQuestion(index, 'text', e.target.value)}
+                  required
+                  className="rounded-xl"
+                />
+              </div>
 
-            <h1 className="text-2xl font-bold my-3 mx-3">Tambah Kuesioner</h1>
-
-            <form onSubmit={submit} className="space-y-4 max-w-xl mx-3">
-                <div className="grid gap-2">
-                    <Label className="block font-semibold">Judul Kuesioner</Label>
-                    <Input
-                        type="text"
-                        required
-                        value={data.title}
-                        onChange={(e) => setData('title', e.target.value)}
-                        className="input"
-                    />
-                    <InputError message={errors.title}/>
+              <div className="grid md:grid-cols-2 gap-4">
+                <div>
+                  <Label className="font-semibold text-sm mb-1 block">Jenis</Label>
+                  <select
+                    value={q.type}
+                    onChange={(e) => updateQuestion(index, 'type', e.target.value)}
+                    className="rounded-xl w-full border px-3 py-2 text-sm"
+                  >
+                    <option value="text">Text</option>
+                    <option value="radio">Radio</option>
+                  </select>
                 </div>
 
-                <div className="grid gap-2">
-                    <Label className="block font-semibold">Deskripsi</Label>
-                    <textarea
-                        required
-                        value={data.description}
-                        onChange={(e) => setData('description', e.target.value)}
-                        className="input w-full rounded-md border px-3 py-2 text-sm shadow-sm focus:outline-none"
-                    />
-                    <InputError message={errors.description}/>
+                <div>
+                  <Label className="font-semibold text-sm mb-1 block">Urutan</Label>
+                  <Input
+                    type="number"
+                    value={q.order_number}
+                    onChange={(e) => updateQuestion(index, 'order_number', Number(e.target.value))}
+                    required
+                    className="rounded-xl"
+                  />
                 </div>
-                {data.questions.map((q, index) => (
-                    <div key={index} className="border rounded-lg p-4 space-y-3 relative">
-                        <button
-                        type="button"
-                        onClick={() => removeQuestion(index)}
-                        className="absolute top-2 right-2 text-red-600 hover:text-red-800"
-                        >
-                        <Trash size={18} />
-                        </button>
+              </div>
 
-                        <div>
-                        <Label>Pertanyaan</Label>
-                        <Input
-                            value={q.text}
-                            onChange={(e) => updateQuestion(index, 'text', e.target.value)}
-                            required
-                        />
-                    </div>
+              <div className="flex items-center space-x-2">
+                <Checkbox
+                  checked={q.is_required}
+                  onCheckedChange={(checked) => updateQuestion(index, 'is_required', !!checked)}
+                  id={`required-${index}`}
+                />
+                <Label htmlFor={`required-${index}`}>Wajib Diisi?</Label>
+              </div>
 
-                <div className="grid grid-cols-2 gap-4">
-                    <div>
-                        <Label>Jenis</Label>
-                        <select
-                        value={q.type}
-                        onChange={(e) => updateQuestion(index, 'type', e.target.value)}
-                        className="input w-full rounded-md border px-3 py-2 text-sm shadow-sm"
-                        >
-                        <option value="text">Text</option>
-                        <option value="radio">Radio</option>
-                        </select>
-                    </div>
-
-                    <div>
-                        <Label>Urutan</Label>
-                        <Input
+              {q.type === 'radio' && (
+                <div className="space-y-2">
+                  <Label className="font-semibold text-sm mb-1 block">Opsi Jawaban</Label>
+                  {q.answer_options.map((opt, oIndex) => (
+                    <div key={oIndex} className="flex gap-2 items-center">
+                      <Input
                         type="number"
-                        value={q.order_number}
-                        onChange={(e) => updateQuestion(index, 'order_number', Number(e.target.value))}
-                        required
-                        />
+                        value={opt.value}
+                        onChange={(e) => {
+                          const updated = [...data.questions];
+                          updated[index].answer_options[oIndex].value = Number(e.target.value);
+                          setData('questions', updated);
+                        }}
+                        className="w-1/4 rounded-xl"
+                      />
+                      <Input
+                        value={opt.label}
+                        onChange={(e) => updateOption(index, oIndex, e.target.value)}
+                        className="w-3/4 rounded-xl"
+                      />
+                      <button type="button" onClick={() => removeOption(index, oIndex)} className="text-red-600 hover:text-red-800">
+                        <Trash size={18} />
+                      </button>
                     </div>
+                  ))}
+                  <Button
+                    type="button"
+                    variant="outline"
+                    onClick={() => addOption(index)}
+                    className="rounded-full text-sm mt-2"
+                  >
+                    <PlusCircle className="w-4 h-4 mr-2" /> Tambah Opsi
+                  </Button>
                 </div>
+              )}
 
-                <div className="flex items-center gap-2">
-                    <Checkbox
-                        checked={q.is_required}
-                        onCheckedChange={(checked) => updateQuestion(index, 'is_required', !!checked)}
-                        id={`required-${index}`}
-                    />
-                    <Label htmlFor={`required-${index}`}>Wajib Diisi?</Label>
-                    </div>
+              <Button
+                type="button"
+                variant="outline"
+                onClick={() => addQuestion(index)}
+                className="w-full rounded-full mt-4"
+              >
+                <PlusCircle className="w-4 h-4 mr-2" /> Tambah Pertanyaan
+              </Button>
+            </div>
+          ))}
 
-                    {(q.type === 'radio') && (
-                    <div className="space-y-2">
-                        <Label>Opsi Jawaban</Label>
-                        {q.answer_options.map((opt, oIndex) => (
-                        <div key={oIndex} className="flex gap-2">
-                            <div className="grid grid-cols-2 gap-2 w-full">
-                            <Input
-                                type="number"
-                                value={opt.value}
-                                onChange={(e) => {
-                                const updated = [...data.questions];
-                                updated[index].answer_options[oIndex].value = Number(e.target.value);
-                                setData('questions', updated);
-                                }}
-                                placeholder="Value"
-                            />
-                            <Input
-                                value={opt.label}
-                                onChange={(e) => updateOption(index, oIndex, e.target.value)}
-                                placeholder="Label"
-                            />
-                            <button
-                                type="button"
-                                onClick={() => removeOption(index, oIndex)}
-                                className="text-red-600 hover:text-red-800 col-span-2"
-                            >
-                                <Trash size={18} />
-                            </button>
-                            </div>
-                        </div>
-                        ))}
-                        <Button
-                        type="button"
-                        variant="outline"
-                        onClick={() => addOption(index)}
-                        size="sm"
-                        >
-                        <PlusCircle size={16} className="mr-2" />
-                        Tambah Opsi
-                        </Button>
-                    </div>
-                    )}
-                    <Button
-                        type="button"
-                        variant="outline"
-                        onClick={() => addQuestion(index)}
-                        className="w-full"
-                    >
-                        <PlusCircle className="w-4 h-4 mr-2" />
-                        Tambah Pertanyaan
-                    </Button>
-                </div>
-                ))}
-                <Button type="submit" className="mt-2 w-full" tabIndex={5} disabled={processing}>
-                        {processing && <LoaderCircle className="h-4 w-4 animate-spin" />}
-                    Simpan
-                </Button>
-            </form>
-        </AppLayout>
-    );
+          <div className="flex justify-end pt-8">
+            <Button
+              type="submit"
+              disabled={processing}
+              className="bg-blue-600 hover:bg-blue-700 text-white px-6 py-2 rounded-full shadow-md"
+            >
+              {processing && <LoaderCircle className="w-4 h-4 animate-spin mr-2" />}
+              Simpan
+            </Button>
+          </div>
+        </form>
+      </div>
+    </AppLayout>
+  );
 }
