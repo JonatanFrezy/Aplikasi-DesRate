@@ -3,107 +3,162 @@ import AppLayout from '@/layouts/app-layout';
 import { type BreadcrumbItem } from '@/types';
 import type { Response } from '@/types';
 import { Label } from '@/components/ui/label';
-import { Card, CardContent } from '@/components/ui/card';
 import { Download } from 'lucide-react';
 
 interface ShowResponseProps {
-    response: Response;
+  response: Response;
 }
 
 export default function ShowResponse({ response }: ShowResponseProps) {
-    const breadcrumbs: BreadcrumbItem[] = [
-        { title: 'Jawaban', href: '/hod/responses' },
-        { title: `Detail: ${response.id}`, href: `/hod/responses/${response.id}` },
-    ];
+  const breadcrumbs: BreadcrumbItem[] = [
+    { title: 'Jawaban', href: '/hod/responses' },
+    { title: `Detail: ${response.id}`, href: `/hod/responses/${response.id}` },
+  ];
 
-    return (
-        <AppLayout breadcrumbs={breadcrumbs}>
-            <Head title={`Jawaban #${response.id}`} />
+  return (
+    <AppLayout breadcrumbs={breadcrumbs}>
+      <Head title={`Jawaban #${response.id}`} />
 
-            <div className="flex flex-col sm:flex-row items-start sm:items-center gap-2 sm:gap-4 w-full md:w-auto">
-                <h1 className="text-2xl font-bold my-3 mx-3">Detail Jawaban</h1>
-                <a
-                    href={`/hod/responses/${response.id}/download`}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="text-blue-600 hover:underline"
-                    >
-                    <Download className="w-5 h-5" />
-                </a>
+      <div className="flex justify-center bg-[#f7f7fb] py-12 px-4 min-h-screen">
+        <div className="w-full max-w-4xl bg-white p-10 rounded-2xl shadow-xl space-y-10">
+          <div className="flex items-center justify-between">
+            <h1 className="text-2xl font-semibold text-gray-800">Detail Jawaban</h1>
+            <a
+              href={`/hod/responses/${response.id}/download`}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="text-blue-600 hover:text-blue-800"
+            >
+              <Download className="w-5 h-5" />
+            </a>
+          </div>
+
+          {/* Reviewer */}
+          <div className="space-y-6">
+            <h2 className="text-xl font-semibold text-gray-800">Informasi Reviewer</h2>
+
+            <div className="grid md:grid-cols-2 gap-6">
+              <div>
+                <Label className="text-sm text-gray-700 font-medium">Nama Pengisi</Label>
+                <p className="mt-2 rounded-xl border border-white shadow-sm px-4 py-2 bg-gray-50 text-gray-900">
+                  {response.rating_link?.send_to_name}
+                </p>
+              </div>
+              <div>
+                <Label className="text-sm text-gray-700 font-medium">Email</Label>
+                <p className="mt-2 rounded-xl border border-white shadow-sm px-4 py-2 bg-gray-50 text-gray-900">
+                  {response.rating_link?.send_to_email}
+                </p>
+              </div>
+              <div>
+                <Label className="text-sm text-gray-700 font-medium">Kontak</Label>
+                <p className="mt-2 rounded-xl border border-white shadow-sm px-4 py-2 bg-gray-50 text-gray-900">
+                  {response.rating_link?.send_to_phone}
+                </p>
+              </div>
+              <div>
+                <Label className="text-sm text-gray-700 font-medium">Tanggal Submit</Label>
+                <p className="mt-2 rounded-xl border border-white shadow-sm px-4 py-2 bg-gray-50 text-gray-900">
+                  {new Date(response.submitted_at).toLocaleString()}
+                </p>
+              </div>
+              <div>
+                <Label className="text-sm text-gray-700 font-medium">Rata-rata Nilai</Label>
+                <p className="mt-2 rounded-xl border border-white shadow-sm px-4 py-2 bg-gray-50 text-gray-900">
+                  {response.average_rating ?? '-'}
+                </p>
+              </div>
+            </div>
+          </div>
+
+          {/* Pekerjaan */}
+          <div className="space-y-4">
+            <h2 className="text-xl font-semibold text-gray-800">Informasi Pekerjaan</h2>
+            <div className="grid md:grid-cols-2 gap-6">
+              <div>
+                <Label className="text-sm text-gray-700 font-medium">Pekerjaan</Label>
+                <p className="mt-2 rounded-xl border border-white shadow-sm px-4 py-2 bg-gray-50 text-gray-900">
+                  {response.project?.title}
+                </p>
+              </div>
+              <div>
+                <Label className="text-sm text-gray-700 font-medium">PM</Label>
+                <p className="mt-2 rounded-xl border border-white shadow-sm px-4 py-2 bg-gray-50 text-gray-900">
+                  {response.project?.pm_name}
+                </p>
+              </div>
+              <div className="md:col-span-2">
+                <Label className="text-sm text-gray-700 font-medium">Anggota Tim</Label>
+                <p className="mt-2 rounded-xl border border-white shadow-sm px-4 py-2 bg-gray-50 text-gray-900">
+                  {response.project?.team_members}
+                </p>
+              </div>
+            </div>
+          </div>
+
+          {/* Kuesioner */}
+          <div className="space-y-4">
+            <h2 className="text-xl font-semibold text-gray-800">Informasi Kuesioner</h2>
+
+            <div>
+              <Label className="text-sm text-gray-700 font-medium">Kuesioner</Label>
+              <p className="mt-2 rounded-xl border border-white shadow-sm px-4 py-2 bg-gray-50 text-gray-900">
+                {response.questionnaire?.title}
+              </p>
+            </div>
+            <div>
+              <Label className="text-sm text-gray-700 font-medium">Deskripsi</Label>
+              <p className="mt-2 rounded-xl border border-white shadow-sm px-4 py-2 bg-gray-50 text-gray-900">
+                {response.questionnaire?.description}
+              </p>
             </div>
 
-            <div className="space-y-6 mx-3">
-                <Card>
-                    <CardContent className="py-4 space-y-2">
-                        <h2 className="text-xl font-semibold">Informasi Reviewer</h2>
-                        <p><strong>Nama Pengisi:</strong> {response.rating_link?.send_to_name}</p>
-                        <p><strong>Email:</strong> {response.rating_link?.send_to_email}</p>
-                        <p><strong>Kontak:</strong> {response.rating_link?.send_to_phone}</p>
-                        <p><strong>Tanggal Submit:</strong> {new Date(response.submitted_at).toLocaleString()}</p>
-                        <p><strong>Rata-rata Nilai:</strong> {response.average_rating ?? '-'}</p>
-                    </CardContent>
-                </Card>
+            <div className="space-y-4">
+              <Label className="text-sm text-gray-700 font-medium">Pertanyaan</Label>
+              {[...response.response_details]
+                .sort((a, b) => (a.question?.order_number ?? 0) - (b.question?.order_number ?? 0))
+                .map((detail, index) => (
+                  <div key={detail.id} className="rounded-xl border border-white shadow-sm bg-gray-50 px-4 py-4 space-y-2">
+                    {detail.question ? (
+                      <>
+                        <Label className="font-medium text-gray-800">
+                          {index + 1}. {detail.question.text}
+                          {Boolean(detail.question.is_required) && <span className="text-red-600"> *</span>}
+                        </Label>
 
-                <Card>
-                    <CardContent className="py-4 space-y-2">
-                        <h2 className="text-xl font-semibold">Informasi Pekerjaan</h2>
-                        <p><strong>Pekerjaan:</strong> {response.project?.title}</p>
-                        <p><strong>PM:</strong> {response.project?.pm_name}</p>
-                        <p><strong>Angota Tim:</strong> {response.project?.team_members}</p>
-                    </CardContent>
-                </Card>
-
-                <Card>
-                    <CardContent className="py-4 space-y-4">
-                        <h2 className="text-xl font-semibold">Informasi Kuesioner</h2>
-                        <p><strong>Kuesioner:</strong> {response.questionnaire?.title}</p>
-                        <p><strong>Deskripsi:</strong> {response.questionnaire?.description}</p>
-                        <p><strong>Pertanyaan:</strong></p>
-                        {[...response.response_details]
-                        .sort((a, b) => (a.question?.order_number ?? 0) - (b.question?.order_number ?? 0))
-                        .map((detail, index) => (
-                            <div key={detail.id} className="border p-4 rounded-md space-y-2">
-                                {detail.question ? (
-                                    <>
-                                        <Label className="font-semibold">
-                                            {index + 1}. {detail.question.text}
-                                            {Boolean(detail.question.is_required) && (
-                                                <span className="text-red-600"> *</span>
-                                            )}
-                                        </Label>
-
-                                        {detail.answer_option ? (
-                                            <div className="space-y-1">
-                                                {detail.question.answer_options?.map((opt) => (
-                                                    <div
-                                                        key={opt.id}
-                                                        className={`flex items-center gap-2 ${
-                                                            opt.id === detail.selected_option_id ? 'text-blue-600 font-semibold' : 'text-gray-700'
-                                                        }`}
-                                                    >
-                                                        <div
-                                                            className={`w-4 h-4 rounded-full border ${
-                                                                opt.id === detail.selected_option_id ? 'bg-blue-600' : 'bg-white'
-                                                            }`}
-                                                        ></div>
-                                                        <span>{opt.label}</span>
-                                                    </div>
-                                                ))}
-                                            </div>
-                                        ) : (
-                                            <p className="text-gray-800 bg-gray-50 border rounded-md p-2">
-                                                {detail.answer_text || '-'}
-                                            </p>
-                                        )}
-                                    </>
-                                ) : (
-                                    <p className="text-sm text-red-500">Pertanyaan tidak tersedia</p>
-                                )}
-                            </div>
-                    ))}
-                    </CardContent>
-                </Card>
+                        {detail.answer_option ? (
+                          <div className="space-y-1">
+                            {detail.question.answer_options?.map((opt) => (
+                              <div
+                                key={opt.id}
+                                className={`flex items-center gap-2 ${
+                                  opt.id === detail.selected_option_id ? 'text-blue-600 font-semibold' : 'text-gray-700'
+                                }`}
+                              >
+                                <div
+                                  className={`w-4 h-4 rounded-full border ${
+                                    opt.id === detail.selected_option_id ? 'bg-blue-600' : 'bg-white'
+                                  }`}
+                                ></div>
+                                <span>{opt.label}</span>
+                              </div>
+                            ))}
+                          </div>
+                        ) : (
+                          <p className="text-gray-800 bg-white border rounded-md p-2">
+                            {detail.answer_text || '-'}
+                          </p>
+                        )}
+                      </>
+                    ) : (
+                      <p className="text-sm text-red-500">Pertanyaan tidak tersedia</p>
+                    )}
+                  </div>
+                ))}
             </div>
-        </AppLayout>
-    );
-} 
+          </div>
+        </div>
+      </div>
+    </AppLayout>
+  );
+}
