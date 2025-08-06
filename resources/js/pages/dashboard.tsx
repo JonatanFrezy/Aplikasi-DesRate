@@ -13,6 +13,14 @@ interface TopRating {
   avg_rating: number;
 }
 
+interface QuestionnaireData {
+  id: number;
+  responden: string;
+  tanggal: string;
+  nilai: number;
+  kategori: string;
+}
+
 interface DashboardProps {
   total_projects: number;
   total_responses: number;
@@ -20,6 +28,7 @@ interface DashboardProps {
   latestResponseDate: string | null;
   ratingDistribution?: RatingEntry[];
   topRatings?: TopRating[];
+  questionnaireData?: QuestionnaireData[];
 }
 
 const breadcrumbs: BreadcrumbItem[] = [
@@ -47,6 +56,7 @@ export default function Dashboard(props: DashboardProps) {
     latestResponseDate,
     ratingDistribution = [],
     topRatings = [],
+    questionnaireData = [],
   } = props;
 
   const maxCount = Math.max(...ratingDistribution.map(r => r.count), 1);
@@ -55,7 +65,6 @@ export default function Dashboard(props: DashboardProps) {
     <AppLayout breadcrumbs={breadcrumbs}>
       <Head title="Dashboard" />
       <div className="flex flex-col gap-6 p-6">
-
 
         <h1 className="text-2xl font-bold">Overview</h1>
 
@@ -92,32 +101,92 @@ export default function Dashboard(props: DashboardProps) {
           </div>
         </div>
 
-        {/* Rating dan Ulasan */}
-        <div className="bg-white/20 backdrop-blur-md rounded-xl p-6 text-black/90 border border-blue-200 w-full md:w-1/2">
-          <h2 className="text-lg font-semibold text-black">Rating dan Ulasan</h2>
-          <p className="text-sm mb-2 text-balck/80">Rating dan ulasan diverifikasi dan berasal dari pengguna</p>
+        {/* Rating dan Ulasan & Tabel Kuesioner */}
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+          {/* Rating dan Ulasan */}
+          <div className="bg-white/20 backdrop-blur-md rounded-xl p-6 text-black/90 border border-blue-200">
+            <h2 className="text-lg font-semibold text-black">Rating dan Ulasan</h2>
+            <p className="text-sm mb-2 text-black/80">Rating dan ulasan diverifikasi dan berasal dari pengguna</p>
 
-          <div className="flex items-center gap-4">
-            <div className="text-5xl font-bold text-black">{average_rating.toFixed(1)}</div>
-            <div>
-              <Stars count={average_rating} />
-              <p className="text-sm mt-1 text-black/70">{latestResponseDate ?? '-'}</p>
+            <div className="flex items-center gap-4">
+              <div className="text-5xl font-bold text-black">{average_rating.toFixed(1)}</div>
+              <div>
+                <Stars count={average_rating} />
+                <p className="text-sm mt-1 text-black/70">{latestResponseDate ?? '-'}</p>
+              </div>
+            </div>
+
+            <div className="mt-4 space-y-1">
+              {[5, 4, 3, 2, 1].map((star) => {
+                const entry = ratingDistribution.find(r => r.rating === star);
+                const percentage = (entry?.count ?? 0) / maxCount * 100;
+                return (
+                  <div key={star} className="flex items-center gap-2 text-sm text-black">
+                    <span className="w-4">{star}</span>
+                    <div className="w-full bg-black/40 h-2 rounded">
+                      <div className="bg-white h-2 rounded" style={{ width: `${percentage}%` }} />
+                    </div>
+                  </div>
+                );
+              })}
             </div>
           </div>
 
-          <div className="mt-4 space-y-1">
-            {[5, 4, 3, 2, 1].map((star) => {
-              const entry = ratingDistribution.find(r => r.rating === star);
-              const percentage = (entry?.count ?? 0) / maxCount * 100;
-              return (
-                <div key={star} className="flex items-center gap-2 text-sm text-black">
-                  <span className="w-4">{star}</span>
-                  <div className="w-full bg-black/40 h-2 rounded">
-                    <div className="bg-white h-2 rounded" style={{ width: `${percentage}%` }} />
-                  </div>
-                </div>
-              );
-            })}
+          {/* Tabel Nilai Kuesioner */}
+          <div className="bg-white/20 backdrop-blur-md rounded-xl p-6 text-black/90 border border-blue-200">
+            <h2 className="text-lg font-semibold text-black mb-4">Nilai Kuesioner</h2>
+            <div className="overflow-x-auto">
+              <table className="w-full text-sm">
+                <thead>
+                  <tr className="border-b border-black/20">
+                    <th className="text-left py-2 px-1 font-semibold text-black">No</th>
+                    <th className="text-left py-2 px-1 font-semibold text-black">Responden</th>
+                    <th className="text-left py-2 px-1 font-semibold text-black">Tanggal</th>
+                    <th className="text-left py-2 px-1 font-semibold text-black">Nilai</th>
+                    <th className="text-left py-2 px-1 font-semibold text-black">Kategori</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {questionnaireData.map((item, index) => (
+                    <tr key={item.id} className="border-b border-black/10 hover:bg-white/10 transition-colors">
+                      <td className="py-2 px-1 text-black/80">{index + 1}</td>
+                      <td className="py-2 px-1 text-black/80">{item.responden}</td>
+                      <td className="py-2 px-1 text-black/80">{item.tanggal}</td>
+                      <td className="py-2 px-1 text-black/80">
+                        <span className={`font-semibold ${
+                          item.nilai >= 4.5 ? 'text-green-600' : 
+                          item.nilai >= 3.5 ? 'text-yellow-600' : 'text-red-600'
+                        }`}>
+                          {item.nilai.toFixed(1)}
+                        </span>
+                      </td>
+                      <td className="py-2 px-1 text-black/80">
+                        <span className={`px-2 py-1 rounded text-xs font-medium ${
+                          item.kategori === 'Sangat Baik' ? 'bg-green-100 text-green-800' :
+                          item.kategori === 'Baik' ? 'bg-blue-100 text-blue-800' :
+                          item.kategori === 'Cukup' ? 'bg-yellow-100 text-yellow-800' :
+                          'bg-red-100 text-red-800'
+                        }`}>
+                          {item.kategori}
+                        </span>
+                      </td>
+                    </tr>
+                  ))}
+                  {questionnaireData.length === 0 && (
+                    <tr>
+                      <td colSpan={5} className="py-4 text-center text-black/60">
+                        Belum ada data kuesioner
+                      </td>
+                    </tr>
+                  )}
+                </tbody>
+              </table>
+            </div>
+            {questionnaireData.length > 0 && (
+              <div className="mt-3 text-xs text-black/60">
+                Total {questionnaireData.length} data kuesioner
+              </div>
+            )}
           </div>
         </div>
       </div>
