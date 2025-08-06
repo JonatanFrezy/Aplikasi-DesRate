@@ -65,7 +65,7 @@ export default function Dashboard(props: DashboardProps) {
           </div>
 
           <div className="bg-gray-100 rounded-xl p-6 text-center">
-            <h2 className="text-lg font-semibold">Total Jawaban</h2>
+            <h2 className="text-lg font-semibold">Total Responden</h2>
             <p className="text-4xl font-bold mt-2">{total_responses}</p>
             <p className="text-sm text-gray-500 mt-1">per {latestResponseDate ?? '-'}</p>
           </div>
