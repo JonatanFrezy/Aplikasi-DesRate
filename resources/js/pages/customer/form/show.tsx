@@ -44,6 +44,15 @@ export default function RatingForm({ rating_link }: CreateRatingFormProps) {
         onSubmit={submit}
         className="w-full max-w-4xl bg-white p-10 rounded-2xl shadow-xl space-y-8"
       >
+        {/* Logo DesRate & DesNet */}
+        <div className="flex flex-col items-center mb-6">
+          <div className="flex items-center gap-6">
+            <img src="/desrate-logo.png" alt="DesRate Logo" className="h-14" />
+            <img src="/desnet-logo.png" alt="DesNet Logo" className="h-14" />
+          </div>
+          <p className="text-sm text-gray-500 mt-2">oleh PT DES Teknologi Informasi</p>
+        </div>
+
         {/* Informasi Pekerjaan */}
         <div>
           <h2 className="text-2xl font-semibold text-gray-800 mb-4">Informasi Pekerjaan</h2>
