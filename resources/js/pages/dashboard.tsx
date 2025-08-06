@@ -55,63 +55,69 @@ export default function Dashboard(props: DashboardProps) {
     <AppLayout breadcrumbs={breadcrumbs}>
       <Head title="Dashboard" />
       <div className="flex flex-col gap-6 p-6">
+
+
         <h1 className="text-2xl font-bold">Overview</h1>
 
         <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-          <div className="bg-gray-100 rounded-xl p-6 text-center">
+          {/* Total Pekerjaan */}
+          <div className="bg-blue-800 rounded-xl p-6 text-center text-white">
             <h2 className="text-lg font-semibold">Total Pekerjaan</h2>
             <p className="text-4xl font-bold mt-2">{total_projects}</p>
-            <p className="text-sm text-gray-500 mt-1">per {latestResponseDate ?? '-'}</p>
+            <p className="text-sm mt-1">per tahun</p>
           </div>
 
-          <div className="bg-gray-100 rounded-xl p-6 text-center">
+          {/* Total Responden */}
+          <div className="bg-blue-600 rounded-xl p-6 text-center text-white">
             <h2 className="text-lg font-semibold">Total Responden</h2>
             <p className="text-4xl font-bold mt-2">{total_responses}</p>
-            <p className="text-sm text-gray-500 mt-1">per {latestResponseDate ?? '-'}</p>
+            <p className="text-sm mt-1">per tahun</p>
           </div>
 
-          <div className="bg-gray-100 rounded-xl p-6">
-          <div className="flex justify-between mb-4">
-            <h2 className="text-lg font-semibold">Top Rating</h2>
-            <span className="text-sm text-gray-500">{latestResponseDate ?? '-'}</span>
+          {/* Top Rating */}
+          <div className="bg-blue-400 rounded-xl p-6 text-white">
+            <div className="flex justify-between mb-4">
+              <h2 className="text-lg font-semibold">Top Rating</h2>
+              <span className="text-sm">{latestResponseDate ?? '-'}</span>
+            </div>
+            <ul className="divide-y divide-blue-300">
+              {topRatings.map((person, i) => (
+                <li key={i} className="py-2 flex items-center justify-between">
+                  <span>{person.name}</span>
+                  <div className="font-bold">{person.avg_rating.toFixed(1)}</div>
+                  <Stars count={person.avg_rating} />
+                </li>
+              ))}
+            </ul>
           </div>
-          <ul className="divide-y divide-gray-300">
-            {topRatings.map((person, i) => (
-              <li key={i} className="py-2 flex items-center justify-between">
-                <span>{person.name}</span>
-                <div className="font-bold">{person.avg_rating.toFixed(1)}</div>
-                <Stars count={person.avg_rating} />
-              </li>
-            ))}
-          </ul>
         </div>
 
-          <div className="bg-gray-100 rounded-xl p-6">
-            <h2 className="text-lg font-semibold">Rating dan Ulasan</h2>
-            <p className="text-sm text-gray-500 mb-2">Rating dan ulasan diverifikasi dan berasal dari pengguna</p>
+        {/* Rating dan Ulasan */}
+        <div className="bg-white/20 backdrop-blur-md rounded-xl p-6 text-black/90 border border-blue-200 w-full md:w-1/2">
+          <h2 className="text-lg font-semibold text-black">Rating dan Ulasan</h2>
+          <p className="text-sm mb-2 text-balck/80">Rating dan ulasan diverifikasi dan berasal dari pengguna</p>
 
-            <div className="flex items-center gap-4">
-              <div className="text-5xl font-bold">{average_rating.toFixed(1)}</div>
-              <div>
-                <Stars count={average_rating} />
-                <p className="text-sm text-gray-500 mt-1">{latestResponseDate ?? '-'}</p>
-              </div>
+          <div className="flex items-center gap-4">
+            <div className="text-5xl font-bold text-black">{average_rating.toFixed(1)}</div>
+            <div>
+              <Stars count={average_rating} />
+              <p className="text-sm mt-1 text-black/70">{latestResponseDate ?? '-'}</p>
             </div>
+          </div>
 
-            <div className="mt-4 space-y-1">
-              {[5, 4, 3, 2, 1].map((star) => {
-                const entry = ratingDistribution.find(r => r.rating === star);
-                const percentage = (entry?.count ?? 0) / maxCount * 100;
-                return (
-                  <div key={star} className="flex items-center gap-2 text-sm">
-                    <span className="w-4">{star}</span>
-                    <div className="w-full bg-gray-200 h-2 rounded">
-                      <div className="bg-blue-500 h-2 rounded" style={{ width: `${percentage}%` }} />
-                    </div>
+          <div className="mt-4 space-y-1">
+            {[5, 4, 3, 2, 1].map((star) => {
+              const entry = ratingDistribution.find(r => r.rating === star);
+              const percentage = (entry?.count ?? 0) / maxCount * 100;
+              return (
+                <div key={star} className="flex items-center gap-2 text-sm text-black">
+                  <span className="w-4">{star}</span>
+                  <div className="w-full bg-black/40 h-2 rounded">
+                    <div className="bg-white h-2 rounded" style={{ width: `${percentage}%` }} />
                   </div>
-                );
-              })}
-            </div>
+                </div>
+              );
+            })}
           </div>
         </div>
       </div>
