@@ -12,10 +12,13 @@ class DashboardController extends Controller
 {
     public function index(): Response
     {
-        $responses = FormResponse::with(['responseDetails.answerOption', 'ratingLink'])->get();
+        $responses = FormResponse::with(['project', 'questionnaire', 'ratingLink', 'responseDetails.answerOption'])->get();
 
-        $totalResponses = $responses->count();
-        $totalProjects = Project::count();
+        $oneYearAgo = Carbon::now()->subYear();
+        $totalResponses = $responses
+            ->filter(fn($response) => Carbon::parse($response->submitted_at)->gte($oneYearAgo))
+            ->count();
+        $totalProjects = Project::where('created_at', '>=', $oneYearAgo)->count();
 
         // Ambil semua nilai rating valid (numerik)
         $allRatingValues = $responses->flatMap(function ($response) {
@@ -57,8 +60,32 @@ class DashboardController extends Controller
         })
         ->filter(fn($item) => $item['count'] > 0)
         ->sortByDesc('avg_rating')
-        ->take(5)
+        ->take(3)
         ->values();
+
+        $questionnaireData = $responses
+            ->groupBy(fn($r) => $r->questionnaire->id ?? null)
+            ->map(function ($group, $questionnaireId) {
+                $questionnaire = $group->first()->questionnaire;
+                $title = $questionnaire?->title ?? 'Judul Tidak Diketahui';
+
+                $avgPerResponse = $group->map(fn($response) => $response->responseDetails
+                    ->filter(fn($d) => is_numeric($d->answerOption?->value))
+                    ->pluck('answerOption.value')
+                    ->avg())
+                    ->filter(fn($val) => !is_null($val));
+
+                return [
+                    'id' => (int) $questionnaireId,
+                    'title' => $title,
+                    'top' => round($avgPerResponse->max(), 2),
+                    'least' => round($avgPerResponse->min(), 2),
+                ];
+            })
+            ->filter(fn($q) => $q['top'] !== null && $q['least'] !== null)
+            ->values();
+
+
 
         // Tanggal response terakhir
         $latestResponseDate = optional(
@@ -71,6 +98,7 @@ class DashboardController extends Controller
             'average_rating' => round($averageRating, 2),
             'ratingDistribution' => $ratingDistribution,
             'topRatings' => $topRatings,
+            'questionnaireData' => $questionnaireData,
             'latestResponseDate' => $latestResponseDate
                 ? Carbon::parse($latestResponseDate)->format('d/m/Y')
                 : null,

@@ -118,7 +118,7 @@ export default function ShowResponse({ response }: ShowResponseProps) {
               {[...response.response_details]
                 .sort((a, b) => (a.question?.order_number ?? 0) - (b.question?.order_number ?? 0))
                 .map((detail, index) => (
-                  <div key={detail.id} className="rounded-xl border border-white shadow-sm bg-gray-50 px-4 py-4 space-y-2">
+                  <div key={detail.id} className="mt-2 rounded-xl border border-white shadow-sm bg-gray-50 px-4 py-4">
                     {detail.question ? (
                       <>
                         <Label className="font-medium text-gray-800">
@@ -127,28 +127,33 @@ export default function ShowResponse({ response }: ShowResponseProps) {
                         </Label>
 
                         {detail.answer_option ? (
-                          <div className="space-y-1">
-                            {detail.question.answer_options?.map((opt) => (
+                        <div className="mt-2">
+                          {detail.question.answer_options?.map((opt) => {
+                            const isSelected = opt.id === detail.selected_option_id;
+                            return (
                               <div
                                 key={opt.id}
-                                className={`flex items-center gap-2 ${
-                                  opt.id === detail.selected_option_id ? 'text-blue-600 font-semibold' : 'text-gray-700'
-                                }`}
+                                className="flex items-center gap-2 mb-1 text-gray-800"
                               >
-                                <div
-                                  className={`w-4 h-4 rounded-full border ${
-                                    opt.id === detail.selected_option_id ? 'bg-blue-600' : 'bg-white'
-                                  }`}
-                                ></div>
-                                <span>{opt.label}</span>
+                                <span className="relative flex items-center justify-center w-5 h-5">
+                                  {/* Outer circle */}
+                                  <span className={`w-3.5 h-3.5 rounded-full border border-gray-400 flex items-center justify-center`}>
+                                    {/* Inner dot */}
+                                    {isSelected && <span className="w-2 h-2 rounded-full bg-blue-600" />}
+                                  </span>
+                                </span>
+                                <span className={isSelected ? 'font-medium text-blue-600' : 'text-gray-700'}>
+                                  {opt.label}
+                                </span>
                               </div>
-                            ))}
-                          </div>
-                        ) : (
-                          <p className="text-gray-800 bg-white border rounded-md p-2">
-                            {detail.answer_text || '-'}
-                          </p>
-                        )}
+                            );
+                          })}
+                        </div>
+                      ) : (
+                        <p className="text-gray-800 bg-white border rounded-md p-2 mt-2">
+                          {detail.answer_text || '-'}
+                        </p>
+                      )}
                       </>
                     ) : (
                       <p className="text-sm text-red-500">Pertanyaan tidak tersedia</p>

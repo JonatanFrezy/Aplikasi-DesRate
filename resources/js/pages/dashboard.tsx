@@ -16,9 +16,9 @@ interface TopRating {
 
 interface QuestionnaireData {
   id: number;
-  judul: string;
-  nilai_terbaik: number;
-  nilai_terburuk: number;
+  title: string;
+  top: number;
+  least: number;
 }
 
 interface DashboardProps {
@@ -56,16 +56,15 @@ export default function Dashboard(props: DashboardProps) {
     latestResponseDate,
     ratingDistribution = [],
     topRatings = [],
-    questionnaireData: initialQuestionnaireData = [],
   } = props;
 
-  const [questionnaireData, setQuestionnaireData] = useState<QuestionnaireData[]>(initialQuestionnaireData);
+  const [questionnaireData, setQuestionnaireData] = useState<QuestionnaireData[]>(props.questionnaireData ?? []);
   const [isLoading, setIsLoading] = useState(false);
 
   const fetchQuestionnaireData = async () => {
     try {
       setIsLoading(true);
-      const response = await fetch('/api/questionnaire-data');
+      const response = await fetch('/admin/questionnaires');
       if (response.ok) {
         const data = await response.json();
         setQuestionnaireData(data);
@@ -90,8 +89,8 @@ export default function Dashboard(props: DashboardProps) {
   const getOverallMinMax = (data: QuestionnaireData[]) => {
     if (data.length === 0) return { overallMin: null, overallMax: null };
     
-    const allBestValues = data.map(item => item.nilai_terbaik);
-    const allWorstValues = data.map(item => item.nilai_terburuk);
+    const allBestValues = data.map(item => item.top);
+    const allWorstValues = data.map(item => item.least);
     const allValues = [...allBestValues, ...allWorstValues];
     
     const overallMin = Math.min(...allValues);
@@ -295,21 +294,21 @@ export default function Dashboard(props: DashboardProps) {
                       <td className="py-3 px-2 text-black/80">
                         {index + 1}
                       </td>
-                      <td className="py-3 px-2 text-black/80 max-w-[200px]" title={item.judul}>
-                        <div className="font-medium truncate">{item.judul}</div>
+                      <td className="py-3 px-2 text-black/80 max-w-[200px]" title={item.title}>
+                        <div className="font-medium truncate">{item.title}</div>
                       </td>
                       <td className="py-3 px-2 text-black/80">
                         <div className="flex items-center gap-2">
-                          <span className={`font-semibold ${getValueClass(item.nilai_terbaik)}`}>
-                            {item.nilai_terbaik.toFixed(1)}
+                          <span className={`font-semibold ${getValueClass(item.top)}`}>
+                            {item.top.toFixed(1)}
                           </span>
-                          {isExtremeValue(item.nilai_terbaik) && item.nilai_terbaik === overallMax && (
+                          {isExtremeValue(item.top) && item.top === overallMax && (
                             <TrendingUp className="w-3 h-3 text-green-600" />
                           )}
                           <div className="flex">
                             {Array.from({ length: 5 }).map((_, i) => (
                               <Star key={i} className={`w-3 h-3 ${
-                                i < Math.round(item.nilai_terbaik) ? 'text-yellow-400 fill-yellow-400' : 'text-gray-300'
+                                i < Math.round(item.top) ? 'text-yellow-400 fill-yellow-400' : 'text-gray-300'
                               }`} />
                             ))}
                           </div>
@@ -317,16 +316,16 @@ export default function Dashboard(props: DashboardProps) {
                       </td>
                       <td className="py-3 px-2 text-black/80">
                         <div className="flex items-center gap-2">
-                          <span className={`font-semibold ${getValueClass(item.nilai_terburuk)}`}>
-                            {item.nilai_terburuk.toFixed(1)}
+                          <span className={`font-semibold ${getValueClass(item.least)}`}>
+                            {item.least.toFixed(1)}
                           </span>
-                          {isExtremeValue(item.nilai_terburuk) && item.nilai_terburuk === overallMin && (
+                          {isExtremeValue(item.least) && item.least === overallMin && (
                             <TrendingDown className="w-3 h-3 text-red-600" />
                           )}
                           <div className="flex">
                             {Array.from({ length: 5 }).map((_, i) => (
                               <Star key={i} className={`w-3 h-3 ${
-                                i < Math.round(item.nilai_terburuk) ? 'text-yellow-400 fill-yellow-400' : 'text-gray-300'
+                                i < Math.round(item.least) ? 'text-yellow-400 fill-yellow-400' : 'text-gray-300'
                               }`} />
                             ))}
                           </div>
