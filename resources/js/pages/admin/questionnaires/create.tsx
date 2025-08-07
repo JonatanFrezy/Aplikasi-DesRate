@@ -95,8 +95,10 @@ export default function CreateQuestionnaire() {
   return (
     <AppLayout breadcrumbs={breadcrumbs}>
       <Head title="Tambah Kuesioner" />
+      
       <div className="flex flex-1 justify-center bg-[#f7f7fb] py-10">
         <form onSubmit={submit} className="w-full max-w-4xl bg-white p-8 shadow rounded-2xl space-y-6">
+          <h2 className="text-2xl font-semibold text-gray-800 mb-4">Tambah Link Rating</h2>
           <div>
             <Label className="font-semibold text-base mb-1 block">Judul Kuesioner</Label>
             <Input

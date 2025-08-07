@@ -105,6 +105,7 @@ export default function EditQuestionnaire({ questionnaire }: EditQuestionnairePr
             <Head title="Edit Kuesioner" />
             <div className="flex flex-1 justify-center bg-[#f7f7fb] py-10">
                 <form onSubmit={submit} className="w-full max-w-4xl bg-white p-8 shadow rounded-2xl space-y-6">
+                    <h1 className="text-2xl font-bold">Edit Kuesioner</h1>
                     <div>
                         <Label className="font-semibold text-base mb-1 block">Judul Kuesioner</Label>
                         <Input

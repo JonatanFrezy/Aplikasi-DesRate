@@ -64,7 +64,7 @@ export default function Dashboard(props: DashboardProps) {
   const fetchQuestionnaireData = async () => {
     try {
       setIsLoading(true);
-      const response = await fetch('/admin/questionnaires');
+      const response = await fetch('/api/questionnaire-data');
       if (response.ok) {
         const data = await response.json();
         setQuestionnaireData(data);
