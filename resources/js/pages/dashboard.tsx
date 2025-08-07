@@ -1,7 +1,7 @@
 import AppLayout from '@/layouts/app-layout';
 import { Head } from '@inertiajs/react';
 import { type BreadcrumbItem } from '@/types';
-import { Star } from 'lucide-react';
+import { Star, TrendingUp, TrendingDown } from 'lucide-react';
 import { useEffect, useState } from 'react';
 
 interface RatingEntry {
@@ -16,10 +16,9 @@ interface TopRating {
 
 interface QuestionnaireData {
   id: number;
-  responden: string;
-  tanggal: string;
-  nilai: number;
-  kategori: string;
+  judul: string;
+  nilai_terbaik: number;
+  nilai_terburuk: number;
 }
 
 interface DashboardProps {
@@ -87,6 +86,22 @@ export default function Dashboard(props: DashboardProps) {
 
   const totalRatingResponses = ratingDistribution.reduce((sum, entry) => sum + entry.count, 0);
 
+  // Calculate min and max values across all questionnaires
+  const getOverallMinMax = (data: QuestionnaireData[]) => {
+    if (data.length === 0) return { overallMin: null, overallMax: null };
+    
+    const allBestValues = data.map(item => item.nilai_terbaik);
+    const allWorstValues = data.map(item => item.nilai_terburuk);
+    const allValues = [...allBestValues, ...allWorstValues];
+    
+    const overallMin = Math.min(...allValues);
+    const overallMax = Math.max(...allValues);
+    
+    return { overallMin, overallMax };
+  };
+
+  const { overallMin, overallMax } = getOverallMinMax(questionnaireData);
+
   const getRatingBarColor = (rating: number) => {
     switch (rating) {
       case 5:
@@ -102,6 +117,17 @@ export default function Dashboard(props: DashboardProps) {
       default:
         return 'bg-blue-500';
     }
+  };
+
+  const isExtremeValue = (value: number) => {
+    return value === overallMin || value === overallMax;
+  };
+
+  const getValueClass = (value: number) => {
+    if (value === overallMax) return 'text-green-600 font-bold';
+    if (value === overallMin) return 'text-red-600 font-bold';
+    return value >= 4.5 ? 'text-green-600' : 
+           value >= 3.5 ? 'text-yellow-600' : 'text-red-600';
   };
 
   return (
@@ -219,60 +245,98 @@ export default function Dashboard(props: DashboardProps) {
                 </div>
               )}
             </div>
+
+            {/* Min/Max Summary */}
+            {questionnaireData.length > 0 && (
+              <div className="mb-4 grid grid-cols-2 gap-3">
+                {/* Highest Value */}
+                {overallMax !== null && (
+                  <div className="bg-green-50 border border-green-200 rounded-lg p-3">
+                    <div className="flex items-center gap-2 mb-2">
+                      <TrendingUp className="w-4 h-4 text-green-600" />
+                      <span className="text-xs font-semibold text-green-800">Nilai Tertinggi</span>
+                    </div>
+                    <div className="text-lg font-bold text-green-800">{overallMax.toFixed(1)}</div>
+                    <div className="text-xs text-green-600">
+                      Dari semua kuesioner
+                    </div>
+                  </div>
+                )}
+                
+                {/* Lowest Value */}
+                {overallMin !== null && (
+                  <div className="bg-red-50 border border-red-200 rounded-lg p-3">
+                    <div className="flex items-center gap-2 mb-2">
+                      <TrendingDown className="w-4 h-4 text-red-600" />
+                      <span className="text-xs font-semibold text-red-800">Nilai Terendah</span>
+                    </div>
+                    <div className="text-lg font-bold text-red-800">{overallMin.toFixed(1)}</div>
+                    <div className="text-xs text-red-600">
+                      Dari semua kuesioner
+                    </div>
+                  </div>
+                )}
+              </div>
+            )}
             
             <div className="overflow-x-auto">
               <table className="w-full text-sm">
                 <thead>
                   <tr className="border-b border-black/20">
                     <th className="text-left py-3 px-2 font-semibold text-black">No</th>
-                    <th className="text-left py-3 px-2 font-semibold text-black">Responden</th>
-                    <th className="text-left py-3 px-2 font-semibold text-black">Tanggal</th>
-                    <th className="text-left py-3 px-2 font-semibold text-black">Nilai</th>
-                    <th className="text-left py-3 px-2 font-semibold text-black">Kategori</th>
+                    <th className="text-left py-3 px-2 font-semibold text-black">Judul Kuesioner</th>
+                    <th className="text-left py-3 px-2 font-semibold text-black">Nilai Terbaik</th>
+                    <th className="text-left py-3 px-2 font-semibold text-black">Nilai Terburuk</th>
                   </tr>
                 </thead>
                 <tbody>
                   {questionnaireData.map((item, index) => (
                     <tr key={item.id} className="border-b border-black/10 hover:bg-white/10 transition-colors">
-                      <td className="py-3 px-2 text-black/80">{index + 1}</td>
-                      <td className="py-3 px-2 text-black/80 max-w-[120px] truncate" title={item.responden}>
-                        {item.responden}
+                      <td className="py-3 px-2 text-black/80">
+                        {index + 1}
                       </td>
-                      <td className="py-3 px-2 text-black/80 text-xs">
-                        {new Date(item.tanggal).toLocaleDateString('id-ID')}
+                      <td className="py-3 px-2 text-black/80 max-w-[200px]" title={item.judul}>
+                        <div className="font-medium truncate">{item.judul}</div>
                       </td>
                       <td className="py-3 px-2 text-black/80">
                         <div className="flex items-center gap-2">
-                          <span className={`font-semibold ${
-                            item.nilai >= 4.5 ? 'text-green-600' : 
-                            item.nilai >= 3.5 ? 'text-yellow-600' : 'text-red-600'
-                          }`}>
-                            {item.nilai.toFixed(1)}
+                          <span className={`font-semibold ${getValueClass(item.nilai_terbaik)}`}>
+                            {item.nilai_terbaik.toFixed(1)}
                           </span>
+                          {isExtremeValue(item.nilai_terbaik) && item.nilai_terbaik === overallMax && (
+                            <TrendingUp className="w-3 h-3 text-green-600" />
+                          )}
                           <div className="flex">
                             {Array.from({ length: 5 }).map((_, i) => (
                               <Star key={i} className={`w-3 h-3 ${
-                                i < Math.round(item.nilai) ? 'text-yellow-400 fill-yellow-400' : 'text-gray-300'
+                                i < Math.round(item.nilai_terbaik) ? 'text-yellow-400 fill-yellow-400' : 'text-gray-300'
                               }`} />
                             ))}
                           </div>
                         </div>
                       </td>
                       <td className="py-3 px-2 text-black/80">
-                        <span className={`px-2 py-1 rounded text-xs font-medium ${
-                          item.kategori === 'Sangat Baik' ? 'bg-green-100 text-green-800' :
-                          item.kategori === 'Baik' ? 'bg-blue-100 text-blue-800' :
-                          item.kategori === 'Cukup' ? 'bg-yellow-100 text-yellow-800' :
-                          'bg-red-100 text-red-800'
-                        }`}>
-                          {item.kategori}
-                        </span>
+                        <div className="flex items-center gap-2">
+                          <span className={`font-semibold ${getValueClass(item.nilai_terburuk)}`}>
+                            {item.nilai_terburuk.toFixed(1)}
+                          </span>
+                          {isExtremeValue(item.nilai_terburuk) && item.nilai_terburuk === overallMin && (
+                            <TrendingDown className="w-3 h-3 text-red-600" />
+                          )}
+                          <div className="flex">
+                            {Array.from({ length: 5 }).map((_, i) => (
+                              <Star key={i} className={`w-3 h-3 ${
+                                i < Math.round(item.nilai_terburuk) ? 'text-yellow-400 fill-yellow-400' : 'text-gray-300'
+                              }`} />
+                            ))}
+                          </div>
+                        </div>
                       </td>
                     </tr>
                   ))}
                   {questionnaireData.length === 0 && (
                     <tr>
-                      <td colSpan={5} className="py-8 text-center text-black/60">
+                      <td colSpan={4} className="py-8 text-center text-black/60">
                         {isLoading ? 'Memperbarui data kuesioner...' : 'Belum ada data kuesioner'}
                       </td>
                     </tr>
