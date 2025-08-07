@@ -5,8 +5,6 @@ export default function Welcome() {
     const { auth } = usePage<SharedData>().props;
     return (
     <div style={styles.container}>
-      <Head title="Welcome" />
-
       <div style={styles.left}>
         <div style={styles.leftContent}>
           <img
@@ -20,6 +18,9 @@ export default function Welcome() {
       </div>
 
       <div style={styles.right}>
+        <Head title="Welcome" />
+        <h2 style={styles.title}>Welcome</h2>
+        <p style={styles.subtitle}>Welcome! Please proceed to explore the available features and services.</p>
         <div style={styles.buttonGroup}>
           <nav className="flex items-center justify-end gap-4">
             {auth.user ? (

@@ -117,9 +117,9 @@ export default function Register() {
                 disabled={processing}
                 required
               >
-                <option value="">Select Role</option>
-                <option value="hod">Head of Department</option>
-                <option value="admin">Admin</option>
+                <option value="" className='text-black'>Select Role</option>
+                <option value="hod" className='text-black'>Head of Department</option>
+                <option value="admin" className='text-black'>Admin</option>
               </select>
               <InputError message={errors.role} />
             </div>
