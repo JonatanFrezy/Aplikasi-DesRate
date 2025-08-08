@@ -83,12 +83,27 @@ export default function Projects() {
                         <td className="px-4 py-3">{project.pic_email}</td>
                         <td className="px-4 py-3">{project.pic_phone}</td>
                         <td className="px-4 py-3">
-                          <Link
-                            href={`/admin/projects/${project.id}/edit`}
-                            className="text-xs bg-blue-600 hover:bg-blue-700 text-white px-3 py-1 rounded-md"
-                          >
-                            View Detail
-                          </Link>
+                          <div className="flex items-center gap-2">
+                            <Link
+                              href={`/admin/projects/${project.id}/edit`}
+                              className="text-xs bg-yellow-400 hover:bg-yellow-500 text-white px-3 py-1 rounded-md"
+                            >
+                              Edit
+                            </Link>
+                            <Link
+                              href={`/admin/projects/${project.id}`}
+                              method="delete"
+                              as="button"
+                              className="text-xs bg-red-600 hover:bg-red-700 text-white px-3 py-1 rounded-md"
+                              onClick={(e) => {
+                                if (!confirm('Yakin ingin menghapus project ini?')) {
+                                  e.preventDefault();
+                                }
+                              }}
+                            >
+                              Hapus
+                            </Link>
+                          </div>
                         </td>
                       </tr>
                     ))

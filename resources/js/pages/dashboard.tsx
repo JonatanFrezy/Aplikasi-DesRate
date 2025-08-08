@@ -9,16 +9,17 @@ interface RatingEntry {
   count: number;
 }
 
-interface TopRating {
-  name: string;
-  avg_rating: number;
-}
-
 interface QuestionnaireData {
   id: number;
   title: string;
   top: number;
   least: number;
+  average: number;
+}
+
+interface AverageTrend {
+  current: number;
+  previous: number;
 }
 
 interface DashboardProps {
@@ -27,7 +28,7 @@ interface DashboardProps {
   average_rating: number;
   latestResponseDate: string | null;
   ratingDistribution?: RatingEntry[];
-  topRatings?: TopRating[];
+  averageTrend?: AverageTrend;
   questionnaireData?: QuestionnaireData[];
 }
 
@@ -54,34 +55,12 @@ export default function Dashboard(props: DashboardProps) {
     total_responses,
     average_rating,
     latestResponseDate,
+    averageTrend,
     ratingDistribution = [],
-    topRatings = [],
+    questionnaireData = [],
   } = props;
 
-  const [questionnaireData, setQuestionnaireData] = useState<QuestionnaireData[]>(props.questionnaireData ?? []);
-  const [isLoading, setIsLoading] = useState(false);
-
-  const fetchQuestionnaireData = async () => {
-    try {
-      setIsLoading(true);
-      const response = await fetch('/api/questionnaire-data');
-      if (response.ok) {
-        const data = await response.json();
-        setQuestionnaireData(data);
-      }
-    } catch (error) {
-      console.error('Error fetching questionnaire data:', error);
-    } finally {
-      setIsLoading(false);
-    }
-  };
-
-  useEffect(() => {
-    const interval = setInterval(() => {
-      fetchQuestionnaireData();
-    }, 10000);
-    return () => clearInterval(interval);
-  }, []);
+  const [isLoading] = useState(false);
 
   const totalRatingResponses = ratingDistribution.reduce((sum, entry) => sum + entry.count, 0);
 
@@ -125,9 +104,20 @@ export default function Dashboard(props: DashboardProps) {
   const getValueClass = (value: number) => {
     if (value === overallMax) return 'text-green-600 font-bold';
     if (value === overallMin) return 'text-red-600 font-bold';
-    return value >= 4.5 ? 'text-green-600' : 
-           value >= 3.5 ? 'text-yellow-600' : 'text-red-600';
+    // Skala warna yang lebih natural
+    if (value >= 4.5) return 'text-green-600';        // Sangat baik
+    if (value >= 4.0) return 'text-green-500';        // Baik
+    if (value >= 3.0) return 'text-yellow-600';       // Cukup
+    if (value >= 2.0) return 'text-orange-500';       // Kurang
+    return 'text-red-600';
   };
+
+  // Hitung selisih dan arah tren
+  const trendDifference = averageTrend
+    ? averageTrend.current - averageTrend.previous
+    : 0;
+
+  const trendDirection = trendDifference > 0 ? 'up' : trendDifference < 0 ? 'down' : 'neutral';
 
   return (
     <AppLayout breadcrumbs={breadcrumbs}>
@@ -138,44 +128,65 @@ export default function Dashboard(props: DashboardProps) {
 
         <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
           {/* Total Pekerjaan */}
-          <div className="bg-blue-800 rounded-xl p-6 text-center text-white">
+          <div className="bg-blue-800 rounded-xl p-6 text-center text-white flex flex-col items-center justify-center h-full">
             <h2 className="text-lg font-semibold">Total Pekerjaan</h2>
             <p className="text-4xl font-bold mt-2">{total_projects}</p>
             <p className="text-sm mt-1">per tahun</p>
           </div>
 
           {/* Total Responden */}
-          <div className="bg-blue-600 rounded-xl p-6 text-center text-white">
+          <div className="bg-blue-600 rounded-xl p-6 text-center text-white flex flex-col items-center justify-center h-full">
             <h2 className="text-lg font-semibold">Total Responden</h2>
             <p className="text-4xl font-bold mt-2">{total_responses}</p>
             <p className="text-sm mt-1">per tahun</p>
           </div>
 
-          {/* Top Rating */}
+          {/* Tren Rata-rata Bulanan */}
           <div className="bg-blue-400 rounded-xl p-6 text-white">
-            <div className="flex justify-between mb-4">
-              <h2 className="text-lg font-semibold">Top Rating</h2>
-              <span className="text-sm">{latestResponseDate ?? '-'}</span>
+            <div className="flex justify-between mb-2">
+              <h2 className="text-lg font-semibold">Tren Rata-rata Bulanan</h2>
+              <span className="text-sm mt-1">{latestResponseDate ?? '-'}</span>
             </div>
-            <ul className="divide-y divide-blue-300">
-              {topRatings.map((person, i) => (
-                <li key={i} className="py-2 flex items-center justify-between">
-                  <span className="flex-1 truncate">{person.name}</span>
-                  <div className="font-bold mx-2">{person.avg_rating.toFixed(1)}</div>
-                  <Stars count={person.avg_rating} />
-                </li>
-              ))}
-              {topRatings.length === 0 && (
-                <li className="py-2 text-center text-blue-200">
-                  Belum ada data rating
-                </li>
+
+            <div className="flex items-center gap-3">
+              <span className="text-4xl font-bold">
+                {typeof averageTrend?.current === 'number' 
+                  ? averageTrend.current.toFixed(1) 
+                  : '-'}
+              </span>
+
+
+              {trendDirection === 'up' && (
+                <span className="flex items-center text-green-100">
+                  <TrendingUp className="w-5 h-5 text-green-200" />
+                  <span className="ml-1 text-sm">+{trendDifference.toFixed(1)}</span>
+                </span>
               )}
-            </ul>
+
+              {trendDirection === 'down' && (
+                <span className="flex items-center text-red-100">
+                  <TrendingDown className="w-5 h-5 text-red-200" />
+                  <span className="ml-1 text-sm">{trendDifference.toFixed(1)}</span>
+                </span>
+              )}
+
+              {trendDirection === 'neutral' && (
+                <span className="text-sm text-white/70">Tidak berubah</span>
+              )}
+            </div>
+
+            <p className="text-xs mt-2">
+              Dibanding rata-rata bulan sebelumnya (
+                {typeof averageTrend?.previous === 'number' 
+                  ? averageTrend.previous.toFixed(1) 
+                  : '-'}
+              )
+            </p>
           </div>
         </div>
 
         {/* Rating dan Ulasan & Tabel Kuesioner */}
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+        <div className="grid grid-cols-1 lg:grid-cols-[3fr_4fr] gap-6">
           {/* Rating dan Ulasan */}
           <div className="bg-white/20 backdrop-blur-md rounded-xl p-6 text-black/90 border border-blue-200">
             <h2 className="text-lg font-semibold text-black">Rating dan Ulasan</h2>
@@ -285,6 +296,7 @@ export default function Dashboard(props: DashboardProps) {
                     <th className="text-left py-3 px-2 font-semibold text-black">No</th>
                     <th className="text-left py-3 px-2 font-semibold text-black">Judul Kuesioner</th>
                     <th className="text-left py-3 px-2 font-semibold text-black">Nilai Terbaik</th>
+                    <th className="text-left py-3 px-2 font-semibold text-black">Rata-rata</th>
                     <th className="text-left py-3 px-2 font-semibold text-black">Nilai Terburuk</th>
                   </tr>
                 </thead>
@@ -294,8 +306,14 @@ export default function Dashboard(props: DashboardProps) {
                       <td className="py-3 px-2 text-black/80">
                         {index + 1}
                       </td>
-                      <td className="py-3 px-2 text-black/80 max-w-[200px]" title={item.title}>
-                        <div className="font-medium truncate">{item.title}</div>
+                      <td
+                        className="py-3 px-2 text-black/80 max-w-[200px]"
+                        title={item.title}
+                      >
+                        <div className="font-medium">
+                          {item.title.split(" ").slice(0, 2).join(" ")}
+                          {item.title.split(" ").length > 2 && "…"}
+                        </div>
                       </td>
                       <td className="py-3 px-2 text-black/80">
                         <div className="flex items-center gap-2">
@@ -309,6 +327,20 @@ export default function Dashboard(props: DashboardProps) {
                             {Array.from({ length: 5 }).map((_, i) => (
                               <Star key={i} className={`w-3 h-3 ${
                                 i < Math.round(item.top) ? 'text-yellow-400 fill-yellow-400' : 'text-gray-300'
+                              }`} />
+                            ))}
+                          </div>
+                        </div>
+                      </td>
+                      <td className="py-3 px-2 text-black/80">
+                        <div className="flex items-center gap-2">
+                          <span className={`font-semibold ${getValueClass(item.average)}`}>
+                            {item.average.toFixed(1)}
+                          </span>
+                          <div className="flex">
+                            {Array.from({ length: 5 }).map((_, i) => (
+                              <Star key={i} className={`w-3 h-3 ${
+                                i < Math.round(item.average) ? 'text-yellow-400 fill-yellow-400' : 'text-gray-300'
                               }`} />
                             ))}
                           </div>

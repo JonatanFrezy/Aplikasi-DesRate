@@ -20,20 +20,61 @@ class DashboardController extends Controller
             ->count();
         $totalProjects = Project::where('created_at', '>=', $oneYearAgo)->count();
 
-        // Ambil semua nilai rating valid (numerik)
-        $allRatingValues = $responses->flatMap(function ($response) {
-            return $response->responseDetails
-                ->filter(fn($detail) => is_numeric($detail->answerOption?->value))
-                ->pluck('answerOption.value');
+        $startOfThisMonth = Carbon::now()->startOfMonth();
+        $endOfThisMonth = Carbon::now()->endOfMonth();
+
+        $thisMonthResponses = $responses->filter(function ($response) use ($startOfThisMonth, $endOfThisMonth) {
+            $date = Carbon::parse($response->submitted_at);
+            return $date->between($startOfThisMonth, $endOfThisMonth);
         });
 
-        $averageRating = $allRatingValues->avg();
+        $avgRatingsThisMonth = $thisMonthResponses->map(function ($response) {
+            $numericRatings = $response->responseDetails
+                ->filter(fn($detail) => is_numeric($detail->answerOption?->value))
+                ->pluck('answerOption.value');
 
-        // Distribusi rating 1–5, dibulatkan ke nilai terdekat
-        $roundedRatings = $allRatingValues->map(fn($value) => round($value));
+            return $numericRatings->isNotEmpty() ? $numericRatings->avg() : null;
+        })->filter();
+
+        $currentAverage = $avgRatingsThisMonth->avg();
+
+        $startOfLastMonth = Carbon::now()->subMonth()->startOfMonth();
+        $endOfLastMonth = Carbon::now()->subMonth()->endOfMonth();
+
+        $lastMonthResponses = $responses->filter(function ($response) use ($startOfLastMonth, $endOfLastMonth) {
+            $date = Carbon::parse($response->submitted_at);
+            return $date->between($startOfLastMonth, $endOfLastMonth);
+        });
+
+        $avgRatingsLastMonth = $lastMonthResponses->map(function ($response) {
+            $numericRatings = $response->responseDetails
+                ->filter(fn($detail) => is_numeric($detail->answerOption?->value))
+                ->pluck('answerOption.value');
+
+            return $numericRatings->isNotEmpty() ? $numericRatings->avg() : null;
+        })->filter();
+
+        $previousAverage = $avgRatingsLastMonth->avg();
+
+        // Ambil rata-rata rating per response (bukan tiap pertanyaan)
+        $avgRatingsPerResponse = $responses->map(function ($response) {
+            $numericRatings = $response->responseDetails
+                ->filter(fn($detail) => is_numeric($detail->answerOption?->value))
+                ->pluck('answerOption.value');
+
+            return $numericRatings->isNotEmpty()
+                ? $numericRatings->avg()
+                : null;
+        })->filter(); // buang null
+
+        // Hitung rata-rata keseluruhan dari rata-rata tiap response
+        $averageRating = $avgRatingsPerResponse->avg();
+
+        // Distribusi rating berdasarkan rata-rata tiap response
+        $roundedRatings = $avgRatingsPerResponse->map(fn($value) => round($value));
         $ratingCounts = $roundedRatings->countBy();
 
-        // Susun dalam array numerik untuk BarChart
+        // Susun dalam array numerik untuk BarChart (dari 5 ke 1)
         $ratingDistribution = [];
         for ($i = 5; $i >= 1; $i--) {
             $ratingDistribution[] = [
@@ -41,27 +82,6 @@ class DashboardController extends Controller
                 'count' => $ratingCounts[$i] ?? 0,
             ];
         }
-
-        // Top 5 pengisi rating berdasarkan rata-rata nilai mereka
-        $groupedByName = $responses->groupBy(fn($response) => $response->ratingLink?->send_to_name ?? 'Tidak diketahui');
-
-        $topRatings = $groupedByName->map(function ($group, $name) {
-            $ratings = $group->flatMap(function ($response) {
-                return $response->responseDetails
-                    ->filter(fn($detail) => is_numeric($detail->answerOption?->value))
-                    ->pluck('answerOption.value');
-            });
-
-            return [
-                'name' => $name,
-                'avg_rating' => round($ratings->avg(), 2),
-                'count' => $ratings->count(),
-            ];
-        })
-        ->filter(fn($item) => $item['count'] > 0)
-        ->sortByDesc('avg_rating')
-        ->take(3)
-        ->values();
 
         $questionnaireData = $responses
             ->groupBy(fn($r) => $r->questionnaire->id ?? null)
@@ -80,9 +100,10 @@ class DashboardController extends Controller
                     'title' => $title,
                     'top' => round($avgPerResponse->max(), 2),
                     'least' => round($avgPerResponse->min(), 2),
+                    'average' => round($avgPerResponse->avg(), 2),
                 ];
             })
-            ->filter(fn($q) => $q['top'] !== null && $q['least'] !== null)
+            ->filter(fn($q) => $q['top'] !== null && $q['least'] !== null && $q['average'] !== null)
             ->values();
 
 
@@ -97,11 +118,14 @@ class DashboardController extends Controller
             'total_responses' => $totalResponses,
             'average_rating' => round($averageRating, 2),
             'ratingDistribution' => $ratingDistribution,
-            'topRatings' => $topRatings,
             'questionnaireData' => $questionnaireData,
             'latestResponseDate' => $latestResponseDate
                 ? Carbon::parse($latestResponseDate)->format('d/m/Y')
                 : null,
+            'averageTrend' => [
+                'current' => $currentAverage ? round($currentAverage, 2) : null,
+                'previous' => $previousAverage ? round($previousAverage, 2) : null,
+            ],
         ]);
     }
 }

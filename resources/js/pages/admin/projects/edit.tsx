@@ -126,31 +126,14 @@ export default function EditProject({ project }: EditProjectProps) {
             </div>
           </div>
 
-          <div className="flex justify-end gap-4 pt-8">
+          <div className="flex justify-end pt-8">
             <Button
               type="submit"
               disabled={processing}
               className="bg-blue-600 hover:bg-blue-700 text-white px-6 py-2 rounded-full shadow-md"
             >
               {processing && <LoaderCircle className="w-4 h-4 animate-spin mr-2" />}
-              Simpan
-            </Button>
-            <Button
-              type="button"
-              variant="outline"
-              className="border border-gray-300 text-gray-700 px-6 py-2 rounded-full shadow-sm"
-            >
-              <Pencil className="w-4 h-4 mr-2" />
-              Edit
-            </Button>
-            <Button
-              type="button"
-              variant="destructive"
-              onClick={handleDelete}
-              className="bg-red-600 hover:bg-red-700 text-white px-6 py-2 rounded-full shadow-md"
-            >
-              <Trash2 className="w-4 h-4 mr-2" />
-              Hapus
+              Perbarui
             </Button>
           </div>
         </form>
