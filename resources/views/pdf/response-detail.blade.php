@@ -149,11 +149,6 @@
               @foreach ($detail->question->answerOptions ?? [] as $opt)
                 <div class="radio-option {{ $opt->id === $detail->selected_option_id ? 'selected' : '' }}">
                   <span>{{ $opt->label }}</span>
-                  <span>
-                    @if ($opt->id === $detail->selected_option_id)
-                      &#x2714;
-                    @endif
-                  </span>
                 </div>
               @endforeach
             @else
