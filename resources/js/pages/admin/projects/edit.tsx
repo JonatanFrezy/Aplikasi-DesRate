@@ -23,7 +23,6 @@ export default function EditProject({ project }: EditProjectProps) {
     data,
     setData,
     put,
-    delete: destroy,
     processing,
     errors,
   } = useForm({
