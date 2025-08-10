@@ -40,12 +40,6 @@ export default function EditProject({ project }: EditProjectProps) {
     put(`/admin/projects/${project.id}`);
   };
 
-  const handleDelete = () => {
-    if (confirm('Yakin ingin menghapus data ini?')) {
-      destroy(`/admin/projects/${project.id}`);
-    }
-  };
-
   return (
     <AppLayout breadcrumbs={breadcrumbs}>
       <Head title={`Edit Pekerjaan: ${project.title}`} />
